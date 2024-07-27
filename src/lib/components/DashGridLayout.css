@@ -1,0 +1,77 @@
+/*.react-resizable-handle {*/
+/*    background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg width="16" height="16" viewBox="0 0 16 16" fill="%23333333" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M8 0L6.59 1.41 12.17 7H0V9H12.17L6.59 14.59 8 16 16 8L8 0Z"/%3E%3C/svg%3E');*/
+/*    background-position: bottom right;*/
+/*    background-repeat: no-repeat;*/
+/*    background-origin: content-box;*/
+/*    box-sizing: border-box;*/
+/*    cursor: se-resize;*/
+/*    opacity: 0.7;*/
+/*}*/
+
+.react-resizable-handle-s {
+    width: 100%;
+    height: 10px;
+    bottom: 0;
+    left: 0;
+    cursor: s-resize;
+}
+
+.react-resizable-handle-w {
+    width: 10px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    cursor: w-resize;
+}
+
+.react-resizable-handle-e {
+    width: 10px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    cursor: e-resize;
+}
+
+.react-resizable-handle-n {
+    width: 100%;
+    height: 10px;
+    top: 0;
+    left: 0;
+    cursor: n-resize;
+}
+
+.react-resizable-handle-sw {
+    width: 10px;
+    height: 10px;
+    bottom: 0;
+    left: 0;
+    cursor: sw-resize;
+}
+
+.react-resizable-handle-nw {
+    width: 10px;
+    height: 10px;
+    top: 0;
+    left: 0;
+    cursor: nw-resize;
+}
+
+.react-resizable-handle-se {
+    width: 10px;
+    height: 10px;
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+}
+
+.react-resizable-handle-ne {
+    width: 10px;
+    height: 10px;
+    top: 0;
+    right: 0;
+    cursor: ne-resize;
+}
+
+.react-resizable-handle:hover {
+    opacity: 1;
+}

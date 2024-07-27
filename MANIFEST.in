@@ -1,0 +1,13 @@
+include dash_dynamic_grid_layout/dash_dynamic_grid_layout.min.js
+include dash_dynamic_grid_layout/dash_dynamic_grid_layout.min.js.map
+include dash_dynamic_grid_layout/async-*.js
+include dash_dynamic_grid_layout/async-*.js.map
+include dash_dynamic_grid_layout/*-shared.js
+include dash_dynamic_grid_layout/*-shared.js.map
+include dash_dynamic_grid_layout/metadata.json
+include dash_dynamic_grid_layout/package-info.json
+include README.md
+include LICENSE
+include package.json
+include package-info.json
+recursive-include dash_dynamic_grid_layout *.css

@@ -1,0 +1,13 @@
+Package: dashDynamicGridLayout
+Title: Grid layout system for moving components around.
+Version: 0.0.2
+Description: Grid layout system for moving components around.
+Depends: R (>= 3.0.2)
+Imports: 
+Suggests: 
+License: MIT + file LICENSE
+URL: https://github.com/pip-install-python/dash-grid-layout
+BugReports: https://github.com/pip-install-python/dash-grid-layout/issues
+Encoding: UTF-8
+LazyData: true
+KeepSource: true

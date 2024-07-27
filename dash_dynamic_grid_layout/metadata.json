@@ -1,0 +1,169 @@
+{
+  "src/lib/components/DashGridCol.react.js": {
+    "description": "",
+    "displayName": "DashGridCol",
+    "methods": [],
+    "props": {
+      "children": {
+        "type": {
+          "name": "node"
+        },
+        "required": true,
+        "description": ""
+      },
+      "size": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "number"
+          }
+        },
+        "required": true,
+        "description": ""
+      }
+    }
+  },
+  "src/lib/components/DashGridLayout.react.js": {
+    "description": "",
+    "displayName": "DashGridLayout",
+    "methods": [],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": ""
+      },
+      "children": {
+        "type": {
+          "name": "node"
+        },
+        "required": false,
+        "description": ""
+      },
+      "onLayoutChange": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "() => {}",
+          "computed": false
+        }
+      },
+      "newItemTemplate": {
+        "type": {
+          "name": "node"
+        },
+        "required": false,
+        "description": ""
+      },
+      "className": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "\"layout\"",
+          "computed": false
+        }
+      },
+      "rowHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "100",
+          "computed": false
+        }
+      },
+      "cols": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": ""
+      },
+      "itemCount": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": ""
+      },
+      "allowAddItem": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "compactType": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "'vertical'",
+              "computed": false
+            },
+            {
+              "value": "'horizontal'",
+              "computed": false
+            },
+            {
+              "value": "null",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'vertical'",
+          "computed": false
+        }
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  },
+  "src/lib/components/DraggableWrapper.react.js": {
+    "description": "",
+    "displayName": "DraggableWrapper",
+    "methods": [],
+    "props": {
+      "children": {
+        "type": {
+          "name": "node"
+        },
+        "required": false,
+        "description": ""
+      }
+    }
+  }
+}
