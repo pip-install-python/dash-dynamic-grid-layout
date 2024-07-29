@@ -27,13 +27,36 @@ const DashGridLayout = (props) => {
     const [newCounter, setNewCounter] = useState(0);
     const [currentLayout, setCurrentLayout] = useState([]);
     const [resizing, setResizing] = useState(false)
-    const [breakpointData, setBreakpointData] = useState({newBreakpoint: 'lg'});
+    const [breakpointData, setBreakpointData] = useState({});
+    const [breakpoints, setBreakpoints] = useState({lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0})
+
+    const findCurrentBreakpoint = () => {
+        const currentWidth = window.innerWidth;
+        let breakpoints = {...breakpoints, ...props.breakpoints}
+        let currentBreakpoint = null;
+        setBreakpoints(breakpoints)
+
+        if (currentWidth >= breakpoints.lg) {
+          currentBreakpoint = 'lg';
+        } else if (currentWidth >= breakpoints.md) {
+          currentBreakpoint = 'md';
+        } else if (currentWidth >= breakpoints.sm) {
+          currentBreakpoint = 'sm';
+        } else if (currentWidth >= breakpoints.xs) {
+          currentBreakpoint = 'xs';
+        } else {
+          currentBreakpoint = 'xxs';
+        }
+        return currentBreakpoint
+    }
 
     // initial call
     useEffect(() => {
         setCurrentLayout(props.currentLayout || items.map(({ i, x, y, w, h }) => ({ i, x, y, w, h })))
         setItems(props.items || initializeLayout())
         setNewCounter(props.children.length)
+        // get initial screen size
+        setBreakpointData({newBreakpoint: findCurrentBreakpoint()})
     }, [])
 
     useEffect(() => {
@@ -135,6 +158,7 @@ const DashGridLayout = (props) => {
                 isResizable={props.showResizeHandles}
                 onBreakpointChange={onBreakpointChange}
                 {...props}
+                breakpoints={breakpoints}
             >
                 {items.map(createElement)}
             </ResponsiveReactGridLayout>
@@ -150,7 +174,8 @@ DashGridLayout.defaultProps = {
     addItem: false,
     showRemoveButton: true,
     showResizeHandles: true,
-    currentLayout: []
+    currentLayout: [],
+    breakpoints: {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}
 };
 
 DashGridLayout.propTypes = {
@@ -177,6 +202,13 @@ DashGridLayout.propTypes = {
     breakpointData: PropTypes.shape({
         newBreakpoint: PropTypes.string,
         newCols: PropTypes.number
+      }),
+    breakpoints: PropTypes.shape({
+        lg: PropTypes.number,
+        md: PropTypes.number,
+        sm: PropTypes.number,
+        xs: PropTypes.number,
+        xxs: PropTypes.number
       })
 };
 
