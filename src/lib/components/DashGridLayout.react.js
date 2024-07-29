@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './DashGridLayout.css';
 import DraggableWrapper from './DraggableWrapper.react';
+import _ from 'lodash'
 
 // eslint-disable-next-line new-cap
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -29,12 +30,16 @@ const DashGridLayout = (props) => {
     const [resizing, setResizing] = useState(false)
     const [breakpointData, setBreakpointData] = useState({});
     const [breakpoints, setBreakpoints] = useState({lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0})
+    const gridLayoutRef = useRef(null)
 
-    const findCurrentBreakpoint = () => {
-        const currentWidth = window.innerWidth;
-        let breakpoints = {...breakpoints, ...props.breakpoints}
+    const findCurrentBreakpoint = (init = false) => {
+        const currentWidth = gridLayoutRef.current.clientWidth;
+        if (init) {
+            let breakpoints = {...breakpoints, ...props.breakpoints}
+            setBreakpoints(breakpoints)
+        }
         let currentBreakpoint = null;
-        setBreakpoints(breakpoints)
+
 
         if (currentWidth >= breakpoints.lg) {
           currentBreakpoint = 'lg';
@@ -56,7 +61,7 @@ const DashGridLayout = (props) => {
         setItems(props.items || initializeLayout())
         setNewCounter(props.children.length)
         // get initial screen size
-        setBreakpointData({newBreakpoint: findCurrentBreakpoint()})
+        setBreakpointData({newBreakpoint: findCurrentBreakpoint(true)})
     }, [])
 
     useEffect(() => {
@@ -72,8 +77,8 @@ const DashGridLayout = (props) => {
         }
     }, [props.addItem]);
 
-    const onLayoutChange = (layout, allLayouts) => {
-        if (breakpointData?.newBreakpoint == 'lg') {
+    const onLayoutChange = _.debounce((layout, allLayouts) => {
+        if (findCurrentBreakpoint() == 'lg') {
             const newItems = items.map((item) => {
                 const newItem = layout.filter(i => i.i === item.i)[0]
                 return {...item, ...newItem}
@@ -83,12 +88,12 @@ const DashGridLayout = (props) => {
         if (props.setProps) {
             props.setProps({ currentLayout: layout });
         }
-    };
+    }, 5)
 
-    const onBreakpointChange = (newBreakpoint, newCols) => {
+    const onBreakpointChange = _.debounce((newBreakpoint, newCols) => {
         setBreakpointData({newBreakpoint, newCols})
         props.setProps({breakpointData: {newBreakpoint, newCols}})
-    }
+    }, 5)
 
     const onAddItem = () => {
         const newItem = {
@@ -149,7 +154,7 @@ const DashGridLayout = (props) => {
     };
 
     return (
-        <div id={props.id} style={props.style}>
+        <div id={props.id} style={props.style} ref={gridLayoutRef}>
             <ResponsiveReactGridLayout
                 onLayoutChange={onLayoutChange}
                 layouts={{ lg: currentLayout }}
