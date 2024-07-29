@@ -2,8 +2,9 @@
 
 Dash Dynamic Grid Layout is a Dash component library that provides a flexible grid layout system for arranging and moving components within a Dash application.
 
-![Dynamic Grid Example](https://i.imgur.com/BADjL7L.gif)
+![Dynamic Grid Example](assets/example.gif)
 
+Special thanks to <img src="assets/bsdev.jpeg" alt="BSDev" style="border-radius: 100%; width: 30px; height: 30px;"> [BSd3v](https://github.com/BSd3v) for contributing the improvements and bug fixes making this a much more polished project.
 ## Features
 
 - Drag-and-drop functionality for rearranging components
@@ -86,3 +87,5 @@ if __name__ == '__main__':
 Contributions are welcome! Please feel free to submit a Pull Request.
 ### License
 This project is licensed under the MIT License.
+
+

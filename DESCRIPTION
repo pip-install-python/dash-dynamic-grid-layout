@@ -1,6 +1,6 @@
 Package: dashDynamicGridLayout
 Title: Grid layout system for moving components around.
-Version: 0.0.3
+Version: 0.0.4
 Description: Grid layout system for moving components around.
 Depends: R (>= 3.0.2)
 Imports: 
