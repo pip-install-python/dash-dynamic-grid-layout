@@ -75,3 +75,14 @@
 .react-resizable-handle:hover {
     opacity: 1;
 }
+
+.react-draggable:not(.react-resizable-hide) > div {
+    padding: 10px;
+    overflow: hidden;
+    max-height: 95%;
+    max-width: 100%;
+}
+
+.react-resizable-hide > div > .react-grid-dragHandle {
+    display: none;
+}
