@@ -28,6 +28,7 @@ const DashGridLayout = (props) => {
     const [currentLayout, setCurrentLayout] = useState([]);
     const [resizing, setResizing] = useState(false)
     const [breakpointData, setBreakpointData] = useState({newBreakpoint: 'lg'});
+    const {setProps, ...props} = props;
 
     // initial call
     useEffect(() => {
