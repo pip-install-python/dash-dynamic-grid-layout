@@ -28,7 +28,6 @@ const DashGridLayout = (props) => {
     const [currentLayout, setCurrentLayout] = useState([]);
     const [resizing, setResizing] = useState(false)
     const [breakpointData, setBreakpointData] = useState({newBreakpoint: 'lg'});
-    const {setProps, ...props} = props;
 
     // initial call
     useEffect(() => {
@@ -65,7 +64,7 @@ const DashGridLayout = (props) => {
 
     const onBreakpointChange = (newBreakpoint, newCols) => {
         setBreakpointData({newBreakpoint, newCols})
-        setProps({breakpointData: {newBreakpoint, newCols}})
+        props.setProps({breakpointData: {newBreakpoint, newCols}})
     }
 
     const onAddItem = () => {
