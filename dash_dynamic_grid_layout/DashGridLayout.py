@@ -13,7 +13,7 @@ Keyword arguments:
 
 - id (string; optional)
 
-- allowAddItem (boolean; default True)
+- addItem (boolean; default False)
 
 - className (string; default "layout")
 
@@ -21,11 +21,29 @@ Keyword arguments:
 
 - compactType (a value equal to: 'vertical', 'horizontal', null; default 'vertical')
 
+- currentLayout (list of dicts; optional)
+
+    `currentLayout` is a list of dicts with keys:
+
+    - h (number; optional)
+
+    - i (string; optional)
+
+    - w (number; optional)
+
+    - x (number; optional)
+
+    - y (number; optional)
+
 - itemCount (number; optional)
 
 - newItemTemplate (a list of or a singular dash component, string or number; optional)
 
 - rowHeight (number; default 100)
+
+- showRemoveButton (boolean; default True)
+
+- showResizeHandles (boolean; default True)
 
 - style (dict; optional)"""
     _children_props = ['newItemTemplate']
@@ -33,10 +51,10 @@ Keyword arguments:
     _namespace = 'dash_dynamic_grid_layout'
     _type = 'DashGridLayout'
     @_explicitize_args
-    def __init__(self, children=None, id=Component.UNDEFINED, onLayoutChange=Component.UNDEFINED, newItemTemplate=Component.UNDEFINED, className=Component.UNDEFINED, rowHeight=Component.UNDEFINED, cols=Component.UNDEFINED, style=Component.UNDEFINED, itemCount=Component.UNDEFINED, allowAddItem=Component.UNDEFINED, compactType=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['children', 'id', 'allowAddItem', 'className', 'cols', 'compactType', 'itemCount', 'newItemTemplate', 'rowHeight', 'style']
+    def __init__(self, children=None, id=Component.UNDEFINED, onLayoutChange=Component.UNDEFINED, newItemTemplate=Component.UNDEFINED, className=Component.UNDEFINED, rowHeight=Component.UNDEFINED, cols=Component.UNDEFINED, style=Component.UNDEFINED, itemCount=Component.UNDEFINED, addItem=Component.UNDEFINED, compactType=Component.UNDEFINED, showRemoveButton=Component.UNDEFINED, showResizeHandles=Component.UNDEFINED, currentLayout=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['children', 'id', 'addItem', 'className', 'cols', 'compactType', 'currentLayout', 'itemCount', 'newItemTemplate', 'rowHeight', 'showRemoveButton', 'showResizeHandles', 'style']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['children', 'id', 'allowAddItem', 'className', 'cols', 'compactType', 'itemCount', 'newItemTemplate', 'rowHeight', 'style']
+        self.available_properties = ['children', 'id', 'addItem', 'className', 'cols', 'compactType', 'currentLayout', 'itemCount', 'newItemTemplate', 'rowHeight', 'showRemoveButton', 'showResizeHandles', 'style']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

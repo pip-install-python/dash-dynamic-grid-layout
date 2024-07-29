@@ -10,40 +10,71 @@ import DraggableWrapper from './DraggableWrapper.react';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const DashGridLayout = (props) => {
-    const [items, setItems] = useState(props.children.map((child, i) => ({
-        i: i.toString(),
-        // eslint-disable-next-line no-magic-numbers
-        x: i * 2 % 12,
-        // eslint-disable-next-line no-magic-numbers
-        y: Math.floor(i / 6) * 2,
-        w: 2,
-        h: 2,
-        content: child,
-    })));
+    const initializeLayout = () => {
+        return props.children.map((child, i) => ({
+            i: i.toString(),
+            // eslint-disable-next-line no-magic-numbers
+            x: i * 2 % 12,
+            // eslint-disable-next-line no-magic-numbers
+            y: Math.floor(i / 6) * 2,
+            w: 2,
+            h: 2,
+            content: child,
+        }));
+    };
+
+    const [items, setItems] = useState(initializeLayout());
     const [newCounter, setNewCounter] = useState(props.children.length);
+    const [currentLayout, setCurrentLayout] = useState(props.currentLayout || items.map(({ i, x, y, w, h }) => ({ i, x, y, w, h })));
 
     useEffect(() => {
         if (props.setProps) {
-            props.setProps({ itemCount: items.length });
+            props.setProps({ itemCount: items.length, currentLayout: currentLayout });
         }
-    }, [items]);
+    }, [items, currentLayout]);
+
+    useEffect(() => {
+        if (props.addItem) {
+            // eslint-disable-next-line no-use-before-define
+            onAddItem();
+        }
+    }, [props.addItem]);
+
+    const onLayoutChange = (layout) => {
+        console.log("Layout changed:", layout);
+        setCurrentLayout(layout);
+        if (props.setProps) {
+            props.setProps({ currentLayout: layout });
+        }
+        if (props.onLayoutChange) {
+            props.onLayoutChange(layout);
+        }
+    };
 
     const onAddItem = () => {
-        setItems(items.concat({
+        const newItem = {
             i: `n${newCounter}`,
             // eslint-disable-next-line no-magic-numbers
-            x: (items.length * 2) % 12,
+            x: (items.length * 2) % (props.cols.lg || 12),
             y: Infinity,
             w: 2,
             h: 2,
             content: props.newItemTemplate || <div>New Item</div>,
-            useDragHandle: false
-        }));
+        };
+        const newItems = [...items, newItem];
+        setItems(newItems);
         setNewCounter(newCounter + 1);
+
+        const newLayout = [...currentLayout, { i: newItem.i, x: newItem.x, y: newItem.y, w: newItem.w, h: newItem.h }];
+        setCurrentLayout(newLayout);
+        if (props.setProps) {
+            props.setProps({ currentLayout: newLayout, addItem: false });
+        }
     };
 
     const onRemoveItem = (itemId) => {
-        setItems(items.filter(item => item.i !== itemId));
+        setItems(prevItems => prevItems.filter(item => item.i !== itemId));
+        setCurrentLayout(prevLayout => prevLayout.filter(item => item.i !== itemId));
     };
 
     const createElement = (el) => {
@@ -58,18 +89,24 @@ const DashGridLayout = (props) => {
             borderRadius: "50%",
             fontSize: "16px",
             fontWeight: "bold",
+            display: props.showRemoveButton ? 'block' : 'none',
         };
 
         let content = el.content;
         if (content.type === DraggableWrapper) {
             content = React.cloneElement(content, {
+                handleBackground: content.props.handleBackground,
+                handleColor: content.props.handleColor,
+                handleText: content.props.handleText,
                 style: { ...content.props.style, height: '100%' }
             });
         }
 
         return (
             <div key={el.i} data-grid={el} style={{overflow: 'hidden', height: '100%'}}>
-                <span className="remove" style={removeStyle} onClick={() => onRemoveItem(el.i)}>×</span>
+                {props.showRemoveButton && (
+                    <span className="remove" style={removeStyle} onClick={() => onRemoveItem(el.i)}>×</span>
+                )}
                 {content}
             </div>
         );
@@ -77,15 +114,14 @@ const DashGridLayout = (props) => {
 
     return (
         <div id={props.id} style={props.style}>
-            {props.allowAddItem && (
-                <button onClick={onAddItem} style={{marginBottom: '10px'}}>Add Item</button>
-            )}
             <ResponsiveReactGridLayout
-                onLayoutChange={props.onLayoutChange}
+                onLayoutChange={onLayoutChange}
                 {...props}
-                resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
+                layouts={{ lg: currentLayout }}
+                resizeHandles={props.showResizeHandles ? ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] : []}
                 draggableHandle=".react-grid-dragHandle"
                 compactType={props.compactType}
+                isResizable={props.showResizeHandles}
             >
                 {items.map(createElement)}
             </ResponsiveReactGridLayout>
@@ -98,8 +134,11 @@ DashGridLayout.defaultProps = {
     rowHeight: 100,
     cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
     onLayoutChange: () => {},
-    allowAddItem: true,
     compactType: 'vertical',
+    addItem: false,
+    showRemoveButton: true,
+    showResizeHandles: true,
+    currentLayout: [],
 };
 
 DashGridLayout.propTypes = {
@@ -112,15 +151,21 @@ DashGridLayout.propTypes = {
     cols: PropTypes.object,
     style: PropTypes.object,
     itemCount: PropTypes.number,
-    allowAddItem: PropTypes.bool,
+    addItem: PropTypes.bool,
     compactType: PropTypes.oneOf(['vertical', 'horizontal', null]),
-    setProps: PropTypes.func
+    showRemoveButton: PropTypes.bool,
+    showResizeHandles: PropTypes.bool,
+    currentLayout: PropTypes.arrayOf(PropTypes.shape({
+        i: PropTypes.string,
+        x: PropTypes.number,
+        y: PropTypes.number,
+        w: PropTypes.number,
+        h: PropTypes.number,
+    })),
+    setProps: PropTypes.func,
 };
 
 export default DashGridLayout;
-
-// Backup
-
 
 // import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types';
@@ -128,44 +173,90 @@ export default DashGridLayout;
 // import 'react-grid-layout/css/styles.css';
 // import 'react-resizable/css/styles.css';
 // import './DashGridLayout.css';
+// import DraggableWrapper from './DraggableWrapper.react';
 //
 // // eslint-disable-next-line new-cap
 // const ResponsiveReactGridLayout = WidthProvider(Responsive);
 //
 // const DashGridLayout = (props) => {
-//     const [items, setItems] = useState(props.children.map((child, i) => ({
-//         i: i.toString(),
-//         // eslint-disable-next-line no-magic-numbers
-//         x: i * 2 % 12,
-//         // eslint-disable-next-line no-magic-numbers
-//         y: Math.floor(i / 6) * 2,
-//         w: 2,
-//         h: 2,
-//         content: child,
-//     })));
+//     const initializeLayout = () => {
+//         return props.children.map((child, i) => ({
+//             i: i.toString(),
+//             // eslint-disable-next-line no-magic-numbers
+//             x: i * 2 % 12,
+//             // eslint-disable-next-line no-magic-numbers
+//             y: Math.floor(i / 6) * 2,
+//             w: 2,
+//             h: 2,
+//             content: child,
+//         }));
+//     };
+//
+//     const [items, setItems] = useState(initializeLayout());
 //     const [newCounter, setNewCounter] = useState(props.children.length);
+//     const [currentLayout, setCurrentLayout] = useState(props.currentLayout || items.map(({ i, x, y, w, h }) => ({ i, x, y, w, h })));
 //
 //     useEffect(() => {
 //         if (props.setProps) {
-//             props.setProps({ itemCount: items.length });
+//             props.setProps({ itemCount: items.length, currentLayout: currentLayout });
 //         }
-//     }, [items]);
+//     }, [items, currentLayout]);
+//
+//     useEffect(() => {
+//         if (props.addItem) {
+//             // eslint-disable-next-line no-use-before-define
+//             onAddItem();
+//         }
+//     }, [props.addItem]);
+//
+//     useEffect(() => {
+//         // eslint-disable-next-line no-undefined
+//         if (props.showRemoveButton !== undefined) {
+//             // Update the items to reflect the new showRemoveButton state
+//             setItems(prevItems => prevItems.map(item => ({...item, showRemoveButton: props.showRemoveButton})));
+//         }
+//         // eslint-disable-next-line no-undefined
+//         if (props.showResizeHandles !== undefined) {
+//             // Update the items to reflect the new showResizeHandles state
+//             setItems(prevItems => prevItems.map(item => ({...item, showResizeHandles: props.showResizeHandles})));
+//         }
+//     }, [props.showRemoveButton, props.showResizeHandles]);
+//
+//     const onLayoutChange = (layout) => {
+//         console.log("Layout changed:", layout);
+//         setCurrentLayout(layout);
+//         if (props.setProps) {
+//             props.setProps({ currentLayout: layout });
+//         }
+//         if (props.onLayoutChange) {
+//             props.onLayoutChange(layout);
+//         }
+//     };
 //
 //     const onAddItem = () => {
-//         setItems(items.concat({
+//         const newItem = {
 //             i: `n${newCounter}`,
 //             // eslint-disable-next-line no-magic-numbers
-//             x: (items.length * 2) % 12,
+//             x: (items.length * 2) % (props.cols.lg || 12),
 //             y: Infinity,
 //             w: 2,
 //             h: 2,
 //             content: props.newItemTemplate || <div>New Item</div>,
-//         }));
+//         };
+//         const newItems = [...items, newItem];
+//         setItems(newItems);
 //         setNewCounter(newCounter + 1);
+//
+//         const newLayout = [...currentLayout, { i: newItem.i, x: newItem.x, y: newItem.y, w: newItem.w, h: newItem.h }];
+//         setCurrentLayout(newLayout);
+//         if (props.setProps) {
+//             props.setProps({ currentLayout: newLayout, addItem: false });
+//         }
 //     };
 //
 //     const onRemoveItem = (itemId) => {
-//         setItems(items.filter(item => item.i !== itemId));
+//         setItems(prevItems => prevItems.filter(item => item.i !== itemId));
+//         setCurrentLayout(prevLayout => prevLayout.filter(item => item.i !== itemId));
 //     };
 //
 //     const createElement = (el) => {
@@ -180,24 +271,41 @@ export default DashGridLayout;
 //             borderRadius: "50%",
 //             fontSize: "16px",
 //             fontWeight: "bold",
+//             display: props.showRemoveButton ? 'block' : 'none',
 //         };
+//
+//         let content = el.content;
+//         if (content.type === DraggableWrapper) {
+//             content = React.cloneElement(content, {
+//                 handleBackground: content.props.handleBackground,
+//                 handleColor: content.props.handleColor,
+//                 handleText: content.props.handleText,
+//                 id: content.props.id,
+//                 style: { ...content.props.style, height: '100%' },
+//                 showDragHandle: props.showDragHandle,
+//             });
+//         }
+//
 //         return (
-//             <div key={el.i} data-grid={el} style={{overflow: 'hidden', padding: '10px'}}>
-//                 <span className="remove" style={removeStyle} onClick={() => onRemoveItem(el.i)}>×</span>
-//                 {el.content}
+//             <div key={el.i} data-grid={el} style={{overflow: 'hidden', height: '100%'}}>
+//                 {props.showRemoveButton && (
+//                     <span className="remove" style={removeStyle} onClick={() => onRemoveItem(el.i)}>×</span>
+//                 )}
+//                 {content}
 //             </div>
 //         );
 //     };
 //
 //     return (
 //         <div id={props.id} style={props.style}>
-//             {props.allowAddItem && (
-//                 <button onClick={onAddItem} style={{marginBottom: '10px'}}>Add Item</button>
-//             )}
 //             <ResponsiveReactGridLayout
-//                 onLayoutChange={props.onLayoutChange}
+//                 onLayoutChange={onLayoutChange}
 //                 {...props}
-//                 resizeHandles={['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']}
+//                 layouts={{ lg: currentLayout }}
+//                 resizeHandles={props.showResizeHandles ? ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] : []}
+//                 draggableHandle=".react-grid-dragHandle"
+//                 compactType={props.compactType}
+//                 isResizable={props.showResizeHandles}
 //             >
 //                 {items.map(createElement)}
 //             </ResponsiveReactGridLayout>
@@ -205,76 +313,42 @@ export default DashGridLayout;
 //     );
 // };
 //
-//
 // DashGridLayout.defaultProps = {
 //     className: "layout",
 //     rowHeight: 100,
 //     cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
 //     onLayoutChange: () => {},
-//     allowAddItem: true,
-//     // useDragHandle: false
+//     compactType: 'vertical',
+//     addItem: false,
+//     showRemoveButton: true,
+//     showResizeHandles: true,
+//     currentLayout: [],
+//     showDragHandle: true,
 // };
 //
 // DashGridLayout.propTypes = {
-//     /**
-//      * The ID used to identify this component in Dash callbacks.
-//      */
 //     id: PropTypes.string,
-//
-//     /**
-//      * The children of this component.
-//      */
 //     children: PropTypes.node,
-//
-//     /**
-//      * A callback function that is called when the layout changes.
-//      */
 //     onLayoutChange: PropTypes.func,
-//
-//     /**
-//      * A template for new items added to the grid.
-//      */
 //     newItemTemplate: PropTypes.node,
-//
-//     /**
-//      * CSS class name for the layout.
-//      */
 //     className: PropTypes.string,
-//
-//     /**
-//      * The height of a single row in pixels.
-//      */
 //     rowHeight: PropTypes.number,
-//
-//     /**
-//      * An object containing breakpoints and column numbers.
-//      */
 //     cols: PropTypes.object,
-//
-//     /**
-//      * Inline style object for the component.
-//      */
 //     style: PropTypes.object,
-//
-//     /**
-//      * The number of items in the grid.
-//      */
 //     itemCount: PropTypes.number,
-//
-//     /**
-//      * Whether to allow adding new items to the grid.
-//      */
-//     allowAddItem: PropTypes.bool,
-//
-//     /**
-//      * Whether to use drag handles for all items in the grid.
-//      */
-//
-//     /**
-//      * Dash-assigned callback that should be called to report property changes
-//      * to Dash, to make them available for callbacks.
-//      */
-//     setProps: PropTypes.func
+//     addItem: PropTypes.bool,
+//     compactType: PropTypes.oneOf(['vertical', 'horizontal', null]),
+//     showRemoveButton: PropTypes.bool,
+//     showResizeHandles: PropTypes.bool,
+//     showDragHandle: PropTypes.bool,
+//     currentLayout: PropTypes.arrayOf(PropTypes.shape({
+//         i: PropTypes.string,
+//         x: PropTypes.number,
+//         y: PropTypes.number,
+//         w: PropTypes.number,
+//         h: PropTypes.number,
+//     })),
+//     setProps: PropTypes.func,
 // };
 //
 // export default DashGridLayout;

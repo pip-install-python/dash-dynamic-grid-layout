@@ -107,14 +107,14 @@
         "required": false,
         "description": ""
       },
-      "allowAddItem": {
+      "addItem": {
         "type": {
           "name": "bool"
         },
         "required": false,
         "description": "",
         "defaultValue": {
-          "value": "true",
+          "value": "false",
           "computed": false
         }
       },
@@ -143,6 +143,64 @@
           "computed": false
         }
       },
+      "showRemoveButton": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "showResizeHandles": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "true",
+          "computed": false
+        }
+      },
+      "currentLayout": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "i": {
+                "name": "string",
+                "required": false
+              },
+              "x": {
+                "name": "number",
+                "required": false
+              },
+              "y": {
+                "name": "number",
+                "required": false
+              },
+              "w": {
+                "name": "number",
+                "required": false
+              },
+              "h": {
+                "name": "number",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
       "setProps": {
         "type": {
           "name": "func"
@@ -162,7 +220,47 @@
           "name": "node"
         },
         "required": false,
-        "description": ""
+        "description": "The content to be wrapped and made draggable."
+      },
+      "handleBackground": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The background color of the drag handle.",
+        "defaultValue": {
+          "value": "\"rgb(85,85,85)\"",
+          "computed": false
+        }
+      },
+      "handleColor": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The text color of the drag handle.",
+        "defaultValue": {
+          "value": "\"white\"",
+          "computed": false
+        }
+      },
+      "handleText": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "The text to display in the drag handle.",
+        "defaultValue": {
+          "value": "\"Drag here\"",
+          "computed": false
+        }
+      },
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "A unique identifier for the DraggableWrapper component."
       }
     }
   }
