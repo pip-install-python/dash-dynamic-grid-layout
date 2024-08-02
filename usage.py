@@ -18,12 +18,13 @@ app = Dash(__name__)
 # Sample data for the graph
 df = px.data.iris()
 
+
 # Create a Random String ID for the new component
 def generate_random_string(length):
     # Define the characters to choose from
     characters = string.ascii_letters + string.digits
     # Generate a random string
-    random_string = ''.join(random.choice(characters) for _ in range(length))
+    random_string = "".join(random.choice(characters) for _ in range(length))
     return random_string
 
 
@@ -131,7 +132,7 @@ app.layout = dmc.MantineProvider(
                     cols={"lg": 12, "md": 10, "sm": 6, "xs": 4, "xxs": 2},
                     style={"height": "800px"},
                     compactType="horizontal",
-                    persistence=True
+                    persistence=True,
                 ),
                 html.Div(id="layout-output"),
                 dcc.Store(id="layout-store"),
@@ -182,17 +183,19 @@ def add_dynamic_component(n):
     if n:
         items = Patch()
         new_id = generate_random_string(10)
-        items.append(dgl.DraggableWrapper(
-                        dcc.Graph(
-                            figure=px.scatter(
-                                df, x="petal_width", y="petal_length", color="species"
-                            ),
-                            style={"height": "100%"},
-                        ),
-                        id=f'{new_id}'
-                    ))
+        items.append(
+            dgl.DraggableWrapper(
+                dcc.Graph(
+                    figure=px.scatter(
+                        df, x="petal_width", y="petal_length", color="species"
+                    ),
+                    style={"height": "100%"},
+                ),
+                id=f"{new_id}",
+            )
+        )
         itemLayout = Patch()
-        itemLayout.append({'i': f'{new_id}', 'w': 6})
+        itemLayout.append({"i": f"{new_id}", "w": 6})
         return items, itemLayout
     return no_update, no_update
 

@@ -3,22 +3,23 @@ import PropTypes from 'prop-types';
 
 const DraggableWrapper = (props) => {
     const dragHandleStyle = {
-        padding: "5px",
-        cursor: "move",
-        background: props.handleBackground || "rgb(85,85,85)",
-        textAlign: "center",
-        color: props.handleColor || "white",
+        padding: '5px',
+        cursor: 'move',
+        background: props.handleBackground || 'rgb(85,85,85)',
+        textAlign: 'center',
+        color: props.handleColor || 'white',
         // display: props.showRemoveButton ? 'block' : 'none',
     };
 
     return (
-        <div id={props.id} style={{height: '100%', display: 'flex', flexDirection: 'column'}}>
+        <div
+            id={props.id}
+            style={{height: '100%', display: 'flex', flexDirection: 'column'}}
+        >
             <div className="react-grid-dragHandle" style={dragHandleStyle}>
-                {props.handleText || "Drag here"}
+                {props.handleText || 'Drag here'}
             </div>
-            <div style={{flex: 1, overflow: 'hidden'}}>
-                {props.children}
-            </div>
+            <div style={{flex: 1, overflow: 'hidden'}}>{props.children}</div>
         </div>
     );
 };
@@ -52,9 +53,9 @@ DraggableWrapper.propTypes = {
 };
 
 DraggableWrapper.defaultProps = {
-    handleBackground: "rgb(85,85,85)",
-    handleColor: "white",
-    handleText: "Drag here",
+    handleBackground: 'rgb(85,85,85)',
+    handleColor: 'white',
+    handleText: 'Drag here',
     // showDragHandle: true,
 };
 

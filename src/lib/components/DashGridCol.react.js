@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const DashGridCol = (props) => {
-    const { children, size, ...otherProps } = props;
+    const {children, size, ...otherProps} = props;
     return (
-        <div data-grid={{ w: size[0], h: size[1] }} {...otherProps}>
+        <div data-grid={{w: size[0], h: size[1]}} {...otherProps}>
             {children}
         </div>
     );
