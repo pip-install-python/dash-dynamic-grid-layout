@@ -2,7 +2,7 @@
 name = "DashDynamicGridLayout"
 uuid = "1b08a953-4be3-4667-9a23-26b51d8aff17"
 authors = ["pipinstallpython <pipinstallpython@gmail.com>"]
-version = "0.0.4"
+version = "0.0.5"
 
 [deps]
 Dash = "1b08a953-4be3-4667-9a23-3db579824955"

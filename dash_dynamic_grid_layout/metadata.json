@@ -35,31 +35,6 @@
         "required": false,
         "description": ""
       },
-      "children": {
-        "type": {
-          "name": "node"
-        },
-        "required": false,
-        "description": ""
-      },
-      "onLayoutChange": {
-        "type": {
-          "name": "func"
-        },
-        "required": false,
-        "description": "",
-        "defaultValue": {
-          "value": "() => {}",
-          "computed": false
-        }
-      },
-      "newItemTemplate": {
-        "type": {
-          "name": "node"
-        },
-        "required": false,
-        "description": ""
-      },
       "className": {
         "type": {
           "name": "string"
@@ -165,6 +140,99 @@
           "computed": false
         }
       },
+      "persistence": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": ""
+      },
+      "persisted_props": {
+        "type": {
+          "name": "array"
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "['items', 'itemLayout']",
+          "computed": false
+        }
+      },
+      "persistence_type": {
+        "type": {
+          "name": "enum",
+          "value": [
+            {
+              "value": "'local'",
+              "computed": false
+            },
+            {
+              "value": "'memory'",
+              "computed": false
+            },
+            {
+              "value": "'session'",
+              "computed": false
+            }
+          ]
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "'local'",
+          "computed": false
+        }
+      },
+      "items": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "node"
+          }
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "itemLayout": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "shape",
+            "value": {
+              "i": {
+                "name": "string",
+                "required": false
+              },
+              "x": {
+                "name": "number",
+                "required": false
+              },
+              "y": {
+                "name": "number",
+                "required": false
+              },
+              "w": {
+                "name": "number",
+                "required": false
+              },
+              "h": {
+                "name": "number",
+                "required": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
       "currentLayout": {
         "type": {
           "name": "arrayOf",
@@ -207,6 +275,56 @@
         },
         "required": false,
         "description": ""
+      },
+      "breakpointData": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "newBreakpoint": {
+              "name": "string",
+              "required": false
+            },
+            "newCols": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
+      "breakpoints": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "lg": {
+              "name": "number",
+              "required": false
+            },
+            "md": {
+              "name": "number",
+              "required": false
+            },
+            "sm": {
+              "name": "number",
+              "required": false
+            },
+            "xs": {
+              "name": "number",
+              "required": false
+            },
+            "xxs": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "",
+        "defaultValue": {
+          "value": "{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}",
+          "computed": false
+        }
       }
     }
   },

@@ -10,6 +10,7 @@ import json
 import random
 import string
 
+# Set the React version
 dash._dash_renderer._set_react_version("18.2.0")
 
 app = Dash(__name__)
@@ -150,6 +151,7 @@ def store_layout(current_layout):
 @callback(
     Output("grid-layout", "showRemoveButton"),
     Output("grid-layout", "showResizeHandles"),
+    # show how to dynamically change the handle background color of a wrapped component
     Output("draggable-map-1", "handleBackground"),
     Input("edit-mode", "n_clicks"),
     State("grid-layout", "showRemoveButton"),
@@ -160,7 +162,7 @@ def enter_editable_mode(n_clicks, current_remove, current_resize):
     print("Edit mode clicked:", n_clicks)  # Debug print
     if n_clicks is None:
         raise PreventUpdate
-    return not current_remove, not current_resize, "rgba(255, 255, 255, 0.7)"
+    return not current_remove, not current_resize, "red"
 
 
 @callback(Output("layout-output", "children"), Input("grid-layout", "items"))
