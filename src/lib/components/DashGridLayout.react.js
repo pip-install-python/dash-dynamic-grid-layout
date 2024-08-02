@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createRef, useLayoutEffect, forwardRef, memo } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -12,18 +12,14 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const DashGridLayout = ({ setProps, ...props }) => {
 
-
     const [layoutItems, setItems] = useState([]);
     const [newCounter, setNewCounter] = useState(0);
     const [currentLayout, setCurrentLayout] = useState([]);
-    const [resizing, setResizing] = useState(false)
     const [breakpointData, setBreakpointData] = useState({});
     const [breakpoints, setBreakpoints] = useState({lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0})
     const gridLayoutRef = useRef(null)
-    const [layoutMapped, setLayoutMapped] = useState([])
     const [init, setInit] = useState(false)
     const layoutItemsRef = useRef([])
-    const ref = useRef();
     const systemUpdateItems = useRef(null)
     const setPropsRef = useRef(null)
     const updateDashLayout = useRef(null)
@@ -31,7 +27,8 @@ const DashGridLayout = ({ setProps, ...props }) => {
     const findCurrentBreakpoint = (init = false) => {
         const currentWidth = gridLayoutRef.current.clientWidth;
         if (init) {
-            let breakpoints = {...breakpoints, ...props.breakpoints}
+            // eslint-disable-next-line no-use-before-define
+            const breakpoints = {...breakpoints, ...props.breakpoints}
             setBreakpoints(breakpoints)
         }
         let currentBreakpoint = null;
@@ -62,7 +59,7 @@ const DashGridLayout = ({ setProps, ...props }) => {
                         w: 2,
                         h: 2,
                         content: item,
-                    }, ...props.itemLayout.filter((i) => i.i == item.key)[0]
+                    }, ...props.itemLayout.filter((i) => i.i === item.key)[0]
 
                 }
         })
@@ -73,6 +70,7 @@ const DashGridLayout = ({ setProps, ...props }) => {
     useEffect(() => {
         setPropsRef.current = _.debounce((props) => {
             setProps(props)
+            // eslint-disable-next-line no-magic-numbers
         }, 50)
         updateDashLayout.current = _.debounce((layoutItems) => {
             const propsToSet = {itemCount: layoutItems.length}
@@ -81,12 +79,13 @@ const DashGridLayout = ({ setProps, ...props }) => {
                     return _.omit(item, ['content'])
                 })
                 if (!_.isEqual(newLayoutItems, props.itemLayout)) {
-                    propsToSet['itemLayout'] = newLayoutItems
+                    propsToSet.itemLayout = newLayoutItems
                     systemUpdateItems.current = true
                 }
                 layoutItemsRef.current = newLayoutItems
             }
             setPropsRef.current(propsToSet);
+            // eslint-disable-next-line no-magic-numbers
         }, 50)
         setCurrentLayout(props.currentLayout || layoutItems.map(({ i, x, y, w, h }) => ({ i, x, y, w, h })))
         const newItems = convertPropsToLayout(props.items)
@@ -107,6 +106,7 @@ const DashGridLayout = ({ setProps, ...props }) => {
         if (!_.isEqual(layoutItemsRef, props.items)) {
             setItems(convertPropsToLayout(props.items));
         }
+        // eslint-disable-next-line no-magic-numbers
     }, 5);
 
     useEffect(() => {
@@ -123,7 +123,7 @@ const DashGridLayout = ({ setProps, ...props }) => {
     }, [props.addItem]);
 
     const onLayoutChange = _.debounce((layout) => {
-        if (findCurrentBreakpoint() == 'lg') {
+        if (findCurrentBreakpoint() === 'lg') {
             const newItems = [...layoutItems].map((item) => {
                 const newItem = layout.filter(i => i.i === item.i)[0]
                 return {...item, ...newItem}
@@ -133,11 +133,13 @@ const DashGridLayout = ({ setProps, ...props }) => {
         if (setProps.current) {
             setProps.current({ currentLayout: layout });
         }
+        // eslint-disable-next-line no-magic-numbers
     }, 5)
 
     const onBreakpointChange = _.debounce((newBreakpoint, newCols) => {
         setBreakpointData({newBreakpoint, newCols})
         setProps({breakpointData: {newBreakpoint, newCols}})
+        // eslint-disable-next-line no-magic-numbers
     }, 5)
 
     const onAddItem = () => {
@@ -148,7 +150,6 @@ const DashGridLayout = ({ setProps, ...props }) => {
             y: 0,
             w: 2,
             h: 2,
-            content: props.newItemTemplate || <div>New Item</div>,
         };
         const newItems = [...layoutItems, newItem];
         setItems(newItems);
@@ -234,7 +235,6 @@ DashGridLayout.defaultProps = {
 
 DashGridLayout.propTypes = {
     id: PropTypes.string,
-    newItemTemplate: PropTypes.node,
     className: PropTypes.string,
     rowHeight: PropTypes.number,
     cols: PropTypes.object,

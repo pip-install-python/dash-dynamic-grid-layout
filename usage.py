@@ -7,6 +7,8 @@ import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from datetime import datetime, date
 import json
+import random
+import string
 
 dash._dash_renderer._set_react_version("18.2.0")
 
@@ -15,14 +17,14 @@ app = Dash(__name__)
 # Sample data for the graph
 df = px.data.iris()
 
-newComp = dgl.DraggableWrapper(
-                        dcc.Graph(
-                            figure=px.scatter(
-                                df, x="petal_width", y="petal_length", color="species"
-                            ),
-                            style={"height": "100%"},
-                        )
-                    )
+# Create a Random String ID for the new component
+def generate_random_string(length):
+    # Define the characters to choose from
+    characters = string.ascii_letters + string.digits
+    # Generate a random string
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    return random_string
+
 
 app.layout = dmc.MantineProvider(
     [
@@ -77,6 +79,7 @@ app.layout = dmc.MantineProvider(
                                 ),
                             ],
                             id="draggable-map-1",
+                            handleBackground="rgb(85,85,85) !important;",
                         ),
                         dgl.DraggableWrapper(
                             html.Img(
@@ -121,7 +124,6 @@ app.layout = dmc.MantineProvider(
                             )
                         ),
                     ],
-                    newItemTemplate=newComp,
                     showRemoveButton=False,
                     showResizeHandles=False,
                     rowHeight=150,
@@ -177,6 +179,7 @@ def display_layout(current_layout):
 def add_dynamic_component(n):
     if n:
         items = Patch()
+        new_id = generate_random_string(10)
         items.append(dgl.DraggableWrapper(
                         dcc.Graph(
                             figure=px.scatter(
@@ -184,13 +187,13 @@ def add_dynamic_component(n):
                             ),
                             style={"height": "100%"},
                         ),
-                        id='testing'
+                        id=f'{new_id}'
                     ))
         itemLayout = Patch()
-        itemLayout.append({'i': 'testing', 'w': 4})
+        itemLayout.append({'i': f'{new_id}', 'w': 6})
         return items, itemLayout
     return no_update, no_update
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8321)
