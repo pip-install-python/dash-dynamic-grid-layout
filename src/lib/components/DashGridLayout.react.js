@@ -14,7 +14,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
  * DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application.
  * It leverages the react-grid-layout library to provide responsive and draggable grid items.
  */
-const DashGridLayout = ({setProps, ...props}) => {
+const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     const [layoutItems, setItems] = useState([]);
     const [currentLayout, setCurrentLayout] = useState([]);
     const [breakpoints, setBreakpoints] = useState({
@@ -26,10 +26,11 @@ const DashGridLayout = ({setProps, ...props}) => {
     });
     const gridLayoutRef = useRef(null);
     const [init, setInit] = useState(false);
-    const layoutItemsRef = useRef([]);
+    const layoutItemsRef = useRef(itemLayout);
     const systemUpdateItems = useRef(null);
     const setPropsRef = useRef(null);
     const updateDashLayout = useRef(null);
+    const previousItems = useRef(items);
 
     const findCurrentBreakpoint = (init = false) => {
         const currentWidth = gridLayoutRef.current.clientWidth;
@@ -67,7 +68,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                     h: 2,
                     content: item,
                 },
-                ...props.itemLayout.filter((i) => i.i === item.key)[0],
+                ...itemLayout.filter((i) => i.i === item.key)[0],
             };
         });
         return newItems;
@@ -85,7 +86,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                 const newLayoutItems = layoutItems.map((item) => {
                     return _.omit(item, ['content']);
                 });
-                if (!_.isEqual(newLayoutItems, props.itemLayout)) {
+                if (!_.isEqual(newLayoutItems, itemLayout)) {
                     propsToSet.itemLayout = newLayoutItems;
                     systemUpdateItems.current = true;
                 }
@@ -98,29 +99,26 @@ const DashGridLayout = ({setProps, ...props}) => {
             props.currentLayout ||
                 layoutItems.map(({i, x, y, w, h}) => ({i, x, y, w, h}))
         );
-        const newItems = convertPropsToLayout(props.items);
+        const newItems = convertPropsToLayout(items);
         setItems(newItems);
         setInit(true);
     }, []);
 
-    useEffect(() => {
-        if (updateDashLayout.current) {
-            updateDashLayout.current(layoutItems);
-        }
-    }, [layoutItems]);
-
     const updateItemsFromPropsDebounced = _.debounce(() => {
-        if (!_.isEqual(layoutItemsRef, props.items)) {
-            setItems(convertPropsToLayout(props.items));
-        }
+        setItems(convertPropsToLayout(items));
         // eslint-disable-next-line no-magic-numbers
     }, 5);
 
     useEffect(() => {
         if (init) {
-            updateItemsFromPropsDebounced();
+            if (!_.isEqual(previousItems.current, items) ||
+            !_.isEqual(itemLayout, layoutItemsRef.current)) {
+                setTimeout(() => {updateItemsFromPropsDebounced()}, 0);
+            }
+            previousItems.current = items
+            layoutItemsRef.current = itemLayout
         }
-    }, [props.items, props.itemLayout]);
+    }, [items, itemLayout]);
 
     const onLayoutChange = _.debounce((layout) => {
         if (findCurrentBreakpoint() === 'lg') {
@@ -128,18 +126,19 @@ const DashGridLayout = ({setProps, ...props}) => {
                 const newItem = layout.filter((i) => i.i === item.i)[0];
                 return {...item, ...newItem};
             });
+            updateDashLayout.current(newItems)
             setTimeout(() => setItems(newItems), 1);
         }
         if (setProps.current) {
             setProps.current({currentLayout: layout});
         }
         // eslint-disable-next-line no-magic-numbers
-    }, 5);
+    }, 100);
 
     const onBreakpointChange = _.debounce((newBreakpoint, newCols) => {
         setProps({breakpointData: {newBreakpoint, newCols}});
         // eslint-disable-next-line no-magic-numbers
-    }, 5);
+    }, 100);
 
     const createElement = (el) => {
         const removeStyle = {
