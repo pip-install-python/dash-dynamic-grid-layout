@@ -216,7 +216,8 @@ const DashGridLayout = ({setProps, ...props}) => {
     return (
         <div id={props.id} style={props.style} ref={gridLayoutRef}>
             <ResponsiveReactGridLayout
-                onLayoutChange={onLayoutChange}
+                onDragStop={onLayoutChange}
+                onResizeStop={onLayoutChange}
                 layouts={{lg: currentLayout}}
                 resizeHandles={
                     props.showResizeHandles
@@ -228,6 +229,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                 onBreakpointChange={onBreakpointChange}
                 {..._.omit(props, ['items'])}
                 breakpoints={breakpoints}
+                preventCollision={!props.compactType}
             >
                 {layoutItems.map(createElement)}
             </ResponsiveReactGridLayout>
