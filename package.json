@@ -25,6 +25,7 @@
     "lint": "run-s private::lint.*",
     "private::format.eslint": "eslint --quiet --fix src",
     "private::format.prettier": "prettier --write src --ignore-path=.prettierignore",
+    "private::format.tests": "black tests/",
     "format": "run-s private::format.*"
   },
   "author": "pipinstallpython <pipinstallpython@gmail.com>",
