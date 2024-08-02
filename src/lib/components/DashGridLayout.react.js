@@ -229,6 +229,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                 onBreakpointChange={onBreakpointChange}
                 {..._.omit(props, ['items'])}
                 breakpoints={breakpoints}
+                preventCollision={!props.compactType}
             >
                 {layoutItems.map(createElement)}
             </ResponsiveReactGridLayout>
