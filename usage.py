@@ -6,6 +6,9 @@ import dash_leaflet as dl
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from datetime import datetime, date
+import json
+import random
+import string
 
 dash._dash_renderer._set_react_version("18.2.0")
 
@@ -13,6 +16,15 @@ app = Dash(__name__)
 
 # Sample data for the graph
 df = px.data.iris()
+
+# Create a Random String ID for the new component
+def generate_random_string(length):
+    # Define the characters to choose from
+    characters = string.ascii_letters + string.digits
+    # Generate a random string
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    return random_string
+
 
 app.layout = dmc.MantineProvider(
     [
@@ -53,7 +65,7 @@ app.layout = dmc.MantineProvider(
                 ),
                 dgl.DashGridLayout(
                     id="grid-layout",
-                    children=[
+                    items=[
                         dgl.DraggableWrapper(
                             children=[
                                 dl.Map(
@@ -67,6 +79,7 @@ app.layout = dmc.MantineProvider(
                                 ),
                             ],
                             id="draggable-map-1",
+                            handleBackground="rgb(85,85,85) !important;",
                         ),
                         dgl.DraggableWrapper(
                             html.Img(
@@ -111,20 +124,13 @@ app.layout = dmc.MantineProvider(
                             )
                         ),
                     ],
-                    newItemTemplate=dgl.DraggableWrapper(
-                        dcc.Graph(
-                            figure=px.scatter(
-                                df, x="petal_width", y="petal_length", color="species"
-                            ),
-                            style={"height": "100%"},
-                        )
-                    ),
                     showRemoveButton=False,
                     showResizeHandles=False,
                     rowHeight=150,
                     cols={"lg": 12, "md": 10, "sm": 6, "xs": 4, "xxs": 2},
                     style={"height": "800px"},
                     compactType="horizontal",
+                    persistence=True
                 ),
                 html.Div(id="layout-output"),
                 dcc.Store(id="layout-store"),
@@ -157,27 +163,37 @@ def enter_editable_mode(n_clicks, current_remove, current_resize):
     return not current_remove, not current_resize, "rgba(255, 255, 255, 0.7)"
 
 
-@callback(Output("layout-output", "children"), Input("layout-store", "data"))
+@callback(Output("layout-output", "children"), Input("grid-layout", "items"))
 def display_layout(current_layout):
-    print("Current Layout:", current_layout)  # Debug print
     if current_layout and isinstance(current_layout, list):
-        layout_str = "Displayed as [x, y, w, h]:\n"
-        for i, item in enumerate(current_layout):
-            layout_str += f"{i}: [{item['x']}, {item['y']}, {item['w']}, {item['h']}]\n"
-        return html.Pre(layout_str)
+        return html.Div(json.dumps(current_layout))
     return "No layout data available"
 
 
 @callback(
-    Output("grid-layout", "addItem"),
+    Output("grid-layout", "items"),
+    Output("grid-layout", "itemLayout"),
     Input("add-dynamic-component", "n_clicks"),
     prevent_initial_call=True,
 )
-def add_dynamic_component(n_clicks):
-    if n_clicks is None:
-        raise PreventUpdate
-    return True
+def add_dynamic_component(n):
+    if n:
+        items = Patch()
+        new_id = generate_random_string(10)
+        items.append(dgl.DraggableWrapper(
+                        dcc.Graph(
+                            figure=px.scatter(
+                                df, x="petal_width", y="petal_length", color="species"
+                            ),
+                            style={"height": "100%"},
+                        ),
+                        id=f'{new_id}'
+                    ))
+        itemLayout = Patch()
+        itemLayout.append({'i': f'{new_id}', 'w': 6})
+        return items, itemLayout
+    return no_update, no_update
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8321)
