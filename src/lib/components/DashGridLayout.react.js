@@ -16,7 +16,6 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
  */
 const DashGridLayout = ({setProps, ...props}) => {
     const [layoutItems, setItems] = useState([]);
-    const [newCounter, setNewCounter] = useState(0);
     const [currentLayout, setCurrentLayout] = useState([]);
     const [breakpoints, setBreakpoints] = useState({
         lg: 1200,
@@ -101,7 +100,6 @@ const DashGridLayout = ({setProps, ...props}) => {
         );
         const newItems = convertPropsToLayout(props.items);
         setItems(newItems);
-        setNewCounter(props.items.length);
         setInit(true);
     }, []);
 
@@ -124,13 +122,6 @@ const DashGridLayout = ({setProps, ...props}) => {
         }
     }, [props.items, props.itemLayout]);
 
-    useEffect(() => {
-        if (props.addItem) {
-            // eslint-disable-next-line no-use-before-define
-            onAddItem();
-        }
-    }, [props.addItem]);
-
     const onLayoutChange = _.debounce((layout) => {
         if (findCurrentBreakpoint() === 'lg') {
             const newItems = [...layoutItems].map((item) => {
@@ -149,28 +140,6 @@ const DashGridLayout = ({setProps, ...props}) => {
         setProps({breakpointData: {newBreakpoint, newCols}});
         // eslint-disable-next-line no-magic-numbers
     }, 5);
-
-    const onAddItem = () => {
-        const newItem = {
-            i: `n${newCounter}`,
-            // eslint-disable-next-line no-magic-numbers
-            x: 0,
-            y: 0,
-            w: 2,
-            h: 2,
-        };
-        const newItems = [...layoutItems, newItem];
-        setItems(newItems);
-        setNewCounter(newCounter + 1);
-
-        if (setProps) {
-            setProps({addItem: false});
-        }
-    };
-
-    const onRemoveItem = (itemId) => {
-        setItems((prevItems) => prevItems.filter((item) => item.i !== itemId));
-    };
 
     const createElement = (el) => {
         const removeStyle = {
@@ -207,7 +176,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                     <span
                         className="remove"
                         style={removeStyle}
-                        onClick={() => onRemoveItem(el.i)}
+                        onClick={() => setProps({itemToRemove: el.i})}
                     >
                         ×
                     </span>
@@ -246,7 +215,6 @@ DashGridLayout.defaultProps = {
     rowHeight: 100,
     cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
     compactType: 'vertical',
-    addItem: false,
     showRemoveButton: true,
     showResizeHandles: true,
     currentLayout: [],
@@ -255,6 +223,7 @@ DashGridLayout.defaultProps = {
     itemLayout: [],
     persisted_props: ['items', 'itemLayout'],
     persistence_type: 'local',
+    itemToRemove: '',
 };
 
 DashGridLayout.propTypes = {
@@ -288,10 +257,7 @@ DashGridLayout.propTypes = {
      */
     itemCount: PropTypes.number,
 
-    /**
-     * Flag to add a new item to the grid.
-     */
-    addItem: PropTypes.bool,
+    itemToRemove: PropTypes.any,
 
     /**
      * Compaction type. Can be 'vertical', 'horizontal', or null.
