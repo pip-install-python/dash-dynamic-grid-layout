@@ -19,7 +19,13 @@
     "build:backends": "dash-generate-components ./src/lib/components dash_dynamic_grid_layout -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\\\.test\\\\.",
     "build:backends-activated": "(. venv/bin/activate || venv\\scripts\\activate && npm run build:backends)",
     "build": "npm run build:js && npm run build:backends",
-    "build:activated": "npm run build:js && npm run build:backends-activated"
+    "build:activated": "npm run build:js && npm run build:backends-activated",
+    "private::lint.eslint": "eslint src",
+    "private::lint.prettier": "prettier src --list-different --ignore-path=.prettierignore",
+    "lint": "run-s private::lint.*",
+    "private::format.eslint": "eslint --quiet --fix src",
+    "private::format.prettier": "prettier --write src --ignore-path=.prettierignore",
+    "format": "run-s private::format.*"
   },
   "author": "pipinstallpython <pipinstallpython@gmail.com>",
   "license": "MIT",
