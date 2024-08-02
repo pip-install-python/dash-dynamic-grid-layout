@@ -9,7 +9,8 @@ export draggablewrapper
 
 
 A DraggableWrapper component.
-
+DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application.
+It leverages the react-grid-layout library to provide responsive and draggable grid items.
 Keyword arguments:
 - `children` (a list of or a singular dash component, string or number; optional): The content to be wrapped and made draggable.
 - `id` (String; optional): A unique identifier for the DraggableWrapper component.

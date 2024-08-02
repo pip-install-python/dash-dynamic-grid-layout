@@ -6,7 +6,7 @@
 \title{DraggableWrapper component}
 
 \description{
-
+DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application. It leverages the react-grid-layout library to provide responsive and draggable grid items.
 }
 
 \usage{

@@ -6,7 +6,7 @@
 \title{DashGridLayout component}
 
 \description{
-
+DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application. It leverages the react-grid-layout library to provide responsive and draggable grid items.
 }
 
 \usage{
@@ -19,14 +19,14 @@ showRemoveButton=NULL, showResizeHandles=NULL, style=NULL)
 }
 
 \arguments{
-\item{id}{Character. }
+\item{id}{Character. The ID used to identify this component in Dash callbacks.}
 
-\item{addItem}{Logical. }
+\item{addItem}{Logical. Flag to add a new item to the grid.}
 
 \item{breakpointData}{Lists containing elements 'newbreakpoint', 'newcols'.
 those elements have the following types:
   - newbreakpoint (character; optional)
-  - newcols (numeric; optional). }
+  - newcols (numeric; optional). Data about the current breakpoint and columns.}
 
 \item{breakpoints}{Lists containing elements 'lg', 'md', 'sm', 'xs', 'xxs'.
 those elements have the following types:
@@ -34,13 +34,13 @@ those elements have the following types:
   - md (numeric; optional)
   - sm (numeric; optional)
   - xs (numeric; optional)
-  - xxs (numeric; optional). }
+  - xxs (numeric; optional). Breakpoints for responsive layout.}
 
-\item{className}{Character. }
+\item{className}{Character. CSS class name for the grid layout.}
 
-\item{cols}{Named list. }
+\item{cols}{Named list. An object containing breakpoints and column numbers.}
 
-\item{compactType}{A value equal to: 'vertical', 'horizontal', null. }
+\item{compactType}{A value equal to: 'vertical', 'horizontal', null. Compaction type. Can be 'vertical', 'horizontal', or null.}
 
 \item{currentLayout}{List of lists containing elements 'i', 'x', 'y', 'w', 'h'.
 those elements have the following types:
@@ -48,9 +48,9 @@ those elements have the following types:
   - x (numeric; optional)
   - y (numeric; optional)
   - w (numeric; optional)
-  - h (numeric; optional)s. }
+  - h (numeric; optional)s. The current layout of the grid items.}
 
-\item{itemCount}{Numeric. }
+\item{itemCount}{Numeric. The number of items in the grid.}
 
 \item{itemLayout}{List of lists containing elements 'i', 'x', 'y', 'w', 'h'.
 those elements have the following types:
@@ -58,23 +58,23 @@ those elements have the following types:
   - x (numeric; optional)
   - y (numeric; optional)
   - w (numeric; optional)
-  - h (numeric; optional)s. }
+  - h (numeric; optional)s. Layout configuration for each item.}
 
-\item{items}{List of a list of or a singular dash component, string or numbers. }
+\item{items}{List of a list of or a singular dash component, string or numbers. List of items to be rendered in the grid.}
 
-\item{persisted_props}{Unnamed list. }
+\item{persisted_props}{Unnamed list. List of props to persist.}
 
-\item{persistence}{Logical. }
+\item{persistence}{Logical. Whether to persist the component's state.}
 
-\item{persistence_type}{A value equal to: 'local', 'memory', 'session'. }
+\item{persistence_type}{A value equal to: 'local', 'memory', 'session'. Type of persistence ('local', 'memory', 'session').}
 
-\item{rowHeight}{Numeric. }
+\item{rowHeight}{Numeric. The height of a single row in pixels.}
 
-\item{showRemoveButton}{Logical. }
+\item{showRemoveButton}{Logical. Whether to show remove buttons for grid items.}
 
-\item{showResizeHandles}{Logical. }
+\item{showResizeHandles}{Logical. Whether to show resize handles for grid items.}
 
-\item{style}{Named list. }
+\item{style}{Named list. Inline styles for the grid layout.}
 }
 
 \value{named list of JSON elements corresponding to React.js properties and their values}

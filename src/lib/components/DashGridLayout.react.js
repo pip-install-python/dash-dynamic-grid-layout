@@ -10,6 +10,10 @@ import _ from 'lodash';
 // eslint-disable-next-line new-cap
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
+/**
+ * DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application.
+ * It leverages the react-grid-layout library to provide responsive and draggable grid items.
+ */
 const DashGridLayout = ({setProps, ...props}) => {
     const [layoutItems, setItems] = useState([]);
     const [newCounter, setNewCounter] = useState(0);
@@ -240,13 +244,13 @@ const DashGridLayout = ({setProps, ...props}) => {
 DashGridLayout.defaultProps = {
     className: 'layout',
     rowHeight: 100,
-    cols: {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
+    cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
     compactType: 'vertical',
     addItem: false,
     showRemoveButton: true,
     showResizeHandles: true,
     currentLayout: [],
-    breakpoints: {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0},
+    breakpoints: { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 },
     items: [],
     itemLayout: [],
     persisted_props: ['items', 'itemLayout'],
@@ -254,20 +258,79 @@ DashGridLayout.defaultProps = {
 };
 
 DashGridLayout.propTypes = {
+    /**
+     * The ID used to identify this component in Dash callbacks.
+     */
     id: PropTypes.string,
+
+    /**
+     * CSS class name for the grid layout.
+     */
     className: PropTypes.string,
+
+    /**
+     * The height of a single row in pixels.
+     */
     rowHeight: PropTypes.number,
+
+    /**
+     * An object containing breakpoints and column numbers.
+     */
     cols: PropTypes.object,
+
+    /**
+     * Inline styles for the grid layout.
+     */
     style: PropTypes.object,
+
+    /**
+     * The number of items in the grid.
+     */
     itemCount: PropTypes.number,
+
+    /**
+     * Flag to add a new item to the grid.
+     */
     addItem: PropTypes.bool,
+
+    /**
+     * Compaction type. Can be 'vertical', 'horizontal', or null.
+     */
     compactType: PropTypes.oneOf(['vertical', 'horizontal', null]),
+
+    /**
+     * Whether to show remove buttons for grid items.
+     */
     showRemoveButton: PropTypes.bool,
+
+    /**
+     * Whether to show resize handles for grid items.
+     */
     showResizeHandles: PropTypes.bool,
+
+    /**
+     * Whether to persist the component's state.
+     */
     persistence: PropTypes.bool,
+
+    /**
+     * List of props to persist.
+     */
     persisted_props: PropTypes.array,
+
+    /**
+     * Type of persistence ('local', 'memory', 'session').
+     */
     persistence_type: PropTypes.oneOf(['local', 'memory', 'session']),
+
+    /**
+     * List of items to be rendered in the grid.
+     */
     items: PropTypes.arrayOf(PropTypes.node),
+
+    /**
+     * Layout configuration for each item.
+     */
     itemLayout: PropTypes.arrayOf(
         PropTypes.shape({
             i: PropTypes.string,
@@ -277,6 +340,10 @@ DashGridLayout.propTypes = {
             h: PropTypes.number,
         })
     ),
+
+    /**
+     * The current layout of the grid items.
+     */
     currentLayout: PropTypes.arrayOf(
         PropTypes.shape({
             i: PropTypes.string,
@@ -286,11 +353,23 @@ DashGridLayout.propTypes = {
             h: PropTypes.number,
         })
     ),
+
+    /**
+     * Callback function to update Dash props.
+     */
     setProps: PropTypes.func,
+
+    /**
+     * Data about the current breakpoint and columns.
+     */
     breakpointData: PropTypes.shape({
         newBreakpoint: PropTypes.string,
         newCols: PropTypes.number,
     }),
+
+    /**
+     * Breakpoints for responsive layout.
+     */
     breakpoints: PropTypes.shape({
         lg: PropTypes.number,
         md: PropTypes.number,
