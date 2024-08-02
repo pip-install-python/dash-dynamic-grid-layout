@@ -80,7 +80,7 @@ app.layout = dmc.MantineProvider(
                                 ),
                             ],
                             id="draggable-map-1",
-                            handleBackground="rgb(85,85,85) !important;",
+                            handleBackground="rgb(85,85,85)",
                         ),
                         dgl.DraggableWrapper(
                             html.Img(
