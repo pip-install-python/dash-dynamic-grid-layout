@@ -191,13 +191,30 @@ def add_dynamic_component(n):
                     ),
                     style={"height": "100%"},
                 ),
-                id=f"{new_id}",
+                id={'index': f"{new_id}", 'type': 'data'}
             )
         )
         itemLayout = Patch()
         itemLayout.append({"i": f"{new_id}", "w": 6})
         return items, itemLayout
     return no_update, no_update
+
+@callback(
+    Output("grid-layout", "items", allow_duplicate=True),
+    Input("grid-layout", "itemToRemove"),
+    State("grid-layout", "itemLayout"),
+    prevent_initial_call=True,
+)
+def remove_component(key, layout):
+    if key:
+        items = Patch()
+        print(key)
+        for i in range(len(layout)):
+            if layout[i]['i'] == key:
+                del items[i]
+                break
+        return items
+    return no_update
 
 
 if __name__ == "__main__":
