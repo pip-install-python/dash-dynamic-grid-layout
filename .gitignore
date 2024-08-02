@@ -11,6 +11,20 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
+# Build artifacts
+dash_dynamic_grid_layout/*
+!dash_dynamic_grid_layout/__init__.py
+R/
+deps/
+man/
+inst/
+DESCRIPTION
+NAMESPACE
+Project.toml
+src/*.jl
+src/jl/*.jl
+lib/
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
