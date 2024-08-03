@@ -111,7 +111,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 
     useEffect(() => {
         if (init) {
-            if (!_.isEqual(previousItems.current, items) ||
+            if (!_.isEqual(previousItems.current.map((i) => i.key), items.map((i) => i.key)) ||
             !_.isEqual(itemLayout, layoutItemsRef.current)) {
                 setTimeout(() => {updateItemsFromPropsDebounced()}, 0);
             }
