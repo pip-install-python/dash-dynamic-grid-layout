@@ -26,11 +26,11 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     });
     const gridLayoutRef = useRef(null);
     const [init, setInit] = useState(false);
-    const layoutItemsRef = useRef(itemLayout);
+    const layoutItemsRef = useRef([]);
     const systemUpdateItems = useRef(null);
     const setPropsRef = useRef(null);
     const updateDashLayout = useRef(null);
-    const previousItems = useRef(items);
+    const previousItems = useRef([]);
 
     const findCurrentBreakpoint = (init = false) => {
         const currentWidth = gridLayoutRef.current.clientWidth;
@@ -100,9 +100,16 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
                 layoutItems.map(({i, x, y, w, h}) => ({i, x, y, w, h}))
         );
         const newItems = convertPropsToLayout(items);
+        previousItems.current = items
         setItems(newItems);
         setInit(true);
     }, []);
+
+    useEffect(() => {
+        if (updateDashLayout.current) {
+            updateDashLayout.current(layoutItems);
+        }
+    }, [layoutItems]);
 
     const updateItemsFromPropsDebounced = _.debounce(() => {
         setItems(convertPropsToLayout(items));
@@ -111,8 +118,10 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 
     useEffect(() => {
         if (init) {
-            if (!_.isEqual(previousItems.current.map((i) => i.key), items.map((i) => i.key)) ||
+            if (!_.isEqual(previousItems.current.map((i) => _.pick(i, ['key'])),
+             items.map((i) => _.pick(i, ['key']))) ||
             !_.isEqual(itemLayout, layoutItemsRef.current)) {
+                console.log('triggered')
                 setTimeout(() => {updateItemsFromPropsDebounced()}, 0);
             }
             previousItems.current = items
