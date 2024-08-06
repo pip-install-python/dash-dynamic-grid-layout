@@ -166,7 +166,7 @@ def enter_editable_mode(n_clicks, current_remove, current_resize):
     return not current_remove, not current_resize, "red"
 
 
-@callback(Output("layout-output", "children"), Input("grid-layout", "items"))
+@callback(Output("layout-output", "children"), Input("grid-layout", "itemLayout"))
 def display_layout(current_layout):
     if current_layout and isinstance(current_layout, list):
         return html.Div(json.dumps(current_layout))
@@ -191,7 +191,7 @@ def add_dynamic_component(n):
                     ),
                     style={"height": "100%"},
                 ),
-                id=f"{new_id}",
+                id=new_id
             )
         )
         itemLayout = Patch()
@@ -199,6 +199,23 @@ def add_dynamic_component(n):
         return items, itemLayout
     return no_update, no_update
 
+@callback(
+    Output("grid-layout", "items", allow_duplicate=True),
+    Input("grid-layout", "itemToRemove"),
+    State("grid-layout", "itemLayout"),
+    prevent_initial_call=True,
+)
+def remove_component(key, layout):
+    if key:
+        items = Patch()
+        print(key)
+        for i in range(len(layout)):
+            if layout[i]['i'] == key:
+                del items[i]
+                break
+        return items
+    return no_update
+
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8321)
+    app.run_server(debug=True, port=8321, host='0.0.0.0')

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, memo} from 'react';
 import PropTypes from 'prop-types';
 import {Responsive, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -14,47 +14,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
  * DashGridLayout is a flexible grid layout system for arranging and moving components within a Dash application.
  * It leverages the react-grid-layout library to provide responsive and draggable grid items.
  */
-const DashGridLayout = ({setProps, ...props}) => {
-    const [layoutItems, setItems] = useState([]);
-    const [newCounter, setNewCounter] = useState(0);
-    const [currentLayout, setCurrentLayout] = useState([]);
-    const [breakpoints, setBreakpoints] = useState({
-        lg: 1200,
-        md: 996,
-        sm: 768,
-        xs: 480,
-        xxs: 0,
-    });
-    const gridLayoutRef = useRef(null);
-    const [init, setInit] = useState(false);
-    const layoutItemsRef = useRef([]);
-    const systemUpdateItems = useRef(null);
-    const setPropsRef = useRef(null);
-    const updateDashLayout = useRef(null);
-
-    const findCurrentBreakpoint = (init = false) => {
-        const currentWidth = gridLayoutRef.current.clientWidth;
-        if (init) {
-            // eslint-disable-next-line no-use-before-define
-            const breakpoints = {...breakpoints, ...props.breakpoints};
-            setBreakpoints(breakpoints);
-        }
-        let currentBreakpoint = null;
-
-        if (currentWidth >= breakpoints.lg) {
-            currentBreakpoint = 'lg';
-        } else if (currentWidth >= breakpoints.md) {
-            currentBreakpoint = 'md';
-        } else if (currentWidth >= breakpoints.sm) {
-            currentBreakpoint = 'sm';
-        } else if (currentWidth >= breakpoints.xs) {
-            currentBreakpoint = 'xs';
-        } else {
-            currentBreakpoint = 'xxs';
-        }
-        return currentBreakpoint;
-    };
-
+const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     const convertPropsToLayout = (items) => {
         const newItems = [...items].map((item, i) => {
             return {
@@ -68,108 +28,10 @@ const DashGridLayout = ({setProps, ...props}) => {
                     h: 2,
                     content: item,
                 },
-                ...props.itemLayout.filter((i) => i.i === item.key)[0],
+                ...itemLayout.filter((i) => i.i === item.key)[0],
             };
         });
         return newItems;
-    };
-
-    // initial call
-    useEffect(() => {
-        setPropsRef.current = _.debounce((props) => {
-            setProps(props);
-            // eslint-disable-next-line no-magic-numbers
-        }, 50);
-        updateDashLayout.current = _.debounce((layoutItems) => {
-            const propsToSet = {itemCount: layoutItems.length};
-            if (!_.isEmpty(layoutItems)) {
-                const newLayoutItems = layoutItems.map((item) => {
-                    return _.omit(item, ['content']);
-                });
-                if (!_.isEqual(newLayoutItems, props.itemLayout)) {
-                    propsToSet.itemLayout = newLayoutItems;
-                    systemUpdateItems.current = true;
-                }
-                layoutItemsRef.current = newLayoutItems;
-            }
-            setPropsRef.current(propsToSet);
-            // eslint-disable-next-line no-magic-numbers
-        }, 50);
-        setCurrentLayout(
-            props.currentLayout ||
-                layoutItems.map(({i, x, y, w, h}) => ({i, x, y, w, h}))
-        );
-        const newItems = convertPropsToLayout(props.items);
-        setItems(newItems);
-        setNewCounter(props.items.length);
-        setInit(true);
-    }, []);
-
-    useEffect(() => {
-        if (updateDashLayout.current) {
-            updateDashLayout.current(layoutItems);
-        }
-    }, [layoutItems]);
-
-    const updateItemsFromPropsDebounced = _.debounce(() => {
-        if (!_.isEqual(layoutItemsRef, props.items)) {
-            setItems(convertPropsToLayout(props.items));
-        }
-        // eslint-disable-next-line no-magic-numbers
-    }, 5);
-
-    useEffect(() => {
-        if (init) {
-            updateItemsFromPropsDebounced();
-        }
-    }, [props.items, props.itemLayout]);
-
-    useEffect(() => {
-        if (props.addItem) {
-            // eslint-disable-next-line no-use-before-define
-            onAddItem();
-        }
-    }, [props.addItem]);
-
-    const onLayoutChange = _.debounce((layout) => {
-        if (findCurrentBreakpoint() === 'lg') {
-            const newItems = [...layoutItems].map((item) => {
-                const newItem = layout.filter((i) => i.i === item.i)[0];
-                return {...item, ...newItem};
-            });
-            setTimeout(() => setItems(newItems), 1);
-        }
-        if (setProps.current) {
-            setProps.current({currentLayout: layout});
-        }
-        // eslint-disable-next-line no-magic-numbers
-    }, 5);
-
-    const onBreakpointChange = _.debounce((newBreakpoint, newCols) => {
-        setProps({breakpointData: {newBreakpoint, newCols}});
-        // eslint-disable-next-line no-magic-numbers
-    }, 5);
-
-    const onAddItem = () => {
-        const newItem = {
-            i: `n${newCounter}`,
-            // eslint-disable-next-line no-magic-numbers
-            x: 0,
-            y: 0,
-            w: 2,
-            h: 2,
-        };
-        const newItems = [...layoutItems, newItem];
-        setItems(newItems);
-        setNewCounter(newCounter + 1);
-
-        if (setProps) {
-            setProps({addItem: false});
-        }
-    };
-
-    const onRemoveItem = (itemId) => {
-        setItems((prevItems) => prevItems.filter((item) => item.i !== itemId));
     };
 
     const createElement = (el) => {
@@ -207,7 +69,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                     <span
                         className="remove"
                         style={removeStyle}
-                        onClick={() => onRemoveItem(el.i)}
+                        onClick={() => setProps({itemToRemove: el.i})}
                     >
                         ×
                     </span>
@@ -217,12 +79,158 @@ const DashGridLayout = ({setProps, ...props}) => {
         );
     };
 
+    const [layoutItems, setItems] = useState([]);
+    const [breakpoints, setBreakpoints] = useState({
+        lg: 1200,
+        md: 996,
+        sm: 768,
+        xs: 480,
+        xxs: 0,
+    });
+    const gridLayoutRef = useRef(null);
+    const [init, setInit] = useState(false);
+    const layoutItemsRef = useRef([]);
+    const systemUpdateItems = useRef(null);
+    const previousItems = useRef([]);
+    const [gridLayout, setGridLayout] = useState([]);
+    const currentEdit = useRef({
+        showRemoveButton: props.showRemoveButton,
+        showResizeHandles: props.showResizeHandles,
+    });
+
+    const findCurrentBreakpoint = useCallback(
+        (init = false) => {
+            const currentWidth = gridLayoutRef.current.clientWidth;
+            if (init) {
+                // eslint-disable-next-line no-use-before-define
+                const breakpoints = {...breakpoints, ...props.breakpoints};
+                setBreakpoints(breakpoints);
+            }
+            let currentBreakpoint = null;
+
+            if (currentWidth >= breakpoints.lg) {
+                currentBreakpoint = 'lg';
+            } else if (currentWidth >= breakpoints.md) {
+                currentBreakpoint = 'md';
+            } else if (currentWidth >= breakpoints.sm) {
+                currentBreakpoint = 'sm';
+            } else if (currentWidth >= breakpoints.xs) {
+                currentBreakpoint = 'xs';
+            } else {
+                currentBreakpoint = 'xxs';
+            }
+            return currentBreakpoint;
+        },
+        [gridLayoutRef]
+    );
+
+    const updateDashLayoutDebounced = useCallback(
+        _.debounce((layoutItems) => {
+            const propsToSet = {itemCount: layoutItems.length};
+            if (!_.isEmpty(layoutItems)) {
+                const newLayoutItems = layoutItems.map((item) =>
+                    _.pick(item, ['i', 'x', 'y', 'w', 'h'])
+                );
+                if (!_.isEqual(newLayoutItems, itemLayout)) {
+                    propsToSet.itemLayout = newLayoutItems;
+                    systemUpdateItems.current = true;
+                }
+                layoutItemsRef.current = newLayoutItems;
+            }
+
+            setProps(propsToSet);
+            // eslint-disable-next-line no-magic-numbers
+        }, 50),
+        [itemLayout]
+    );
+
+    // initial call
+    useEffect(() => {
+        setProps({
+            breakpointData: {newBreakpoint: findCurrentBreakpoint(true)},
+        });
+        setInit(true);
+    }, []);
+
+    useEffect(() => {
+        if (updateDashLayoutDebounced && init) {
+            updateDashLayoutDebounced(layoutItems);
+            setGridLayout(layoutItems.map(createElement));
+        }
+    }, [layoutItems]);
+
+    const updateItemsFromPropsDebounced = _.debounce(() => {
+        setItems(convertPropsToLayout(items));
+
+        // eslint-disable-next-line no-magic-numbers
+    }, 5);
+
+    useEffect(() => {
+        if (init) {
+            if (
+                !_.isEqual(
+                    previousItems.current.map((i) => _.pick(i, ['key'])),
+                    items.map((i) => _.pick(i, ['key']))
+                ) ||
+                !_.isEqual(itemLayout, layoutItemsRef.current)
+            ) {
+                console.log('updating')
+                updateItemsFromPropsDebounced();
+            }
+            previousItems.current = items;
+            layoutItemsRef.current = itemLayout;
+        }
+    }, [items, itemLayout, init]);
+
+    useEffect(() => {
+        if (
+            !_.isEqual(currentEdit.current, {
+                showRemoveButton: props.showRemoveButton,
+                showResizeHandles: props.showResizeHandles,
+            }) &&
+            init
+        ) {
+            setTimeout(() => updateItemsFromPropsDebounced(), 1);
+            currentEdit.current = {
+                showRemoveButton: props.showRemoveButton,
+                showResizeHandles: props.showResizeHandles,
+            };
+        }
+    }, [props.showRemoveButton, props.showResizeHandles, init]);
+
+    const onLayoutChange = _.debounce((layout) => {
+        if (init) {
+            if (findCurrentBreakpoint() === 'lg') {
+                const newItems = [...layoutItems].map((item) => {
+                    const newItem = layout.filter((i) => i.i === item.i)[0];
+                    return {...item, ...newItem};
+                });
+                updateDashLayoutDebounced(newItems);
+                setTimeout(() => setItems(newItems), 1);
+            }
+            if (setProps) {
+                if (!_.isEqual(props.currentLayout, layout)) {
+                    setTimeout(() => setProps({currentLayout: layout}), 1);
+                }
+            }
+        }
+        // eslint-disable-next-line no-magic-numbers
+    }, 100);
+
+    const onBreakpointChange = _.debounce((newBreakpoint, newCols) => {
+        if (setProps) {
+            setProps({breakpointData: {newBreakpoint, newCols}});
+        }
+        // eslint-disable-next-line no-magic-numbers
+    }, 100);
+
     return (
         <div id={props.id} style={props.style} ref={gridLayoutRef}>
             <ResponsiveReactGridLayout
+                //                onLayoutChange={layoutGridOnly}
                 onDragStop={onLayoutChange}
                 onResizeStop={onLayoutChange}
-                layouts={{lg: currentLayout}}
+                //                layouts={{lg: currentLayout}}
                 resizeHandles={
                     props.showResizeHandles
                         ? ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne']
@@ -235,7 +243,7 @@ const DashGridLayout = ({setProps, ...props}) => {
                 breakpoints={breakpoints}
                 preventCollision={!props.compactType}
             >
-                {layoutItems.map(createElement)}
+                {gridLayout}
             </ResponsiveReactGridLayout>
         </div>
     );
@@ -244,17 +252,17 @@ const DashGridLayout = ({setProps, ...props}) => {
 DashGridLayout.defaultProps = {
     className: 'layout',
     rowHeight: 100,
-    cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
+    cols: {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
     compactType: 'vertical',
-    addItem: false,
     showRemoveButton: true,
     showResizeHandles: true,
     currentLayout: [],
-    breakpoints: { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 },
+    breakpoints: {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0},
     items: [],
     itemLayout: [],
-    persisted_props: ['items', 'itemLayout'],
+    persisted_props: ['itemLayout'],
     persistence_type: 'local',
+    itemToRemove: '',
 };
 
 DashGridLayout.propTypes = {
@@ -288,10 +296,7 @@ DashGridLayout.propTypes = {
      */
     itemCount: PropTypes.number,
 
-    /**
-     * Flag to add a new item to the grid.
-     */
-    addItem: PropTypes.bool,
+    itemToRemove: PropTypes.any,
 
     /**
      * Compaction type. Can be 'vertical', 'horizontal', or null.
@@ -379,4 +384,30 @@ DashGridLayout.propTypes = {
     }),
 };
 
-export default DashGridLayout;
+//function areEqual(prevProps, nextProps) {
+//    const propsToCompare = [
+//        'itemLayout',
+//        'cols',
+//        'breakpoints',
+//        'compactType',
+//        'id',
+//        'rowHeight',
+//        'showRemoveButton',
+//        'showResizeHandles',
+//        'style',
+//    ];
+//    return (
+//        _.isEqual(
+//            prevProps.items.map((i) => _.pick(i, ['key'])),
+//            nextProps.items.map((i) => _.pick(i, ['key']))
+//        ) &&
+//        _.isEqual(
+//            _.pick(prevProps, propsToCompare),
+//            _.pick(nextProps, propsToCompare)
+//        )
+//    );
+//}
+//
+//export default memo(DashGridLayout, areEqual);
+
+export default DashGridLayout
