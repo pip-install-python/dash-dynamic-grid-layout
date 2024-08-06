@@ -93,7 +93,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     const systemUpdateItems = useRef(null);
     const previousItems = useRef([]);
     const [gridLayout, setGridLayout] = useState([]);
-    const [currentEdit, setCurrentEdit] = useState({
+    const currentEdit = useRef({
         showRemoveButton: props.showRemoveButton,
         showResizeHandles: props.showResizeHandles,
     });
@@ -174,6 +174,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
                 ) ||
                 !_.isEqual(itemLayout, layoutItemsRef.current)
             ) {
+                console.log('updating')
                 updateItemsFromPropsDebounced();
             }
             previousItems.current = items;
@@ -183,17 +184,17 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 
     useEffect(() => {
         if (
-            !_.isEqual(currentEdit, {
+            !_.isEqual(currentEdit.current, {
                 showRemoveButton: props.showRemoveButton,
                 showResizeHandles: props.showResizeHandles,
             }) &&
             init
         ) {
-            updateItemsFromPropsDebounced();
-            setCurrentEdit({
+            setTimeout(() => updateItemsFromPropsDebounced(), 1);
+            currentEdit.current = {
                 showRemoveButton: props.showRemoveButton,
                 showResizeHandles: props.showResizeHandles,
-            });
+            };
         }
     }, [props.showRemoveButton, props.showResizeHandles, init]);
 
