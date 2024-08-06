@@ -154,7 +154,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 
     useEffect(() => {
         if (updateDashLayoutDebounced && init) {
-            updateDashLayoutDebounced(layoutItems, itemLayout);
+            updateDashLayoutDebounced(layoutItems);
             setGridLayout(layoutItems.map(createElement));
         }
     }, [layoutItems]);
@@ -383,28 +383,30 @@ DashGridLayout.propTypes = {
     }),
 };
 
-function areEqual(prevProps, nextProps) {
-    const propsToCompare = [
-        'itemLayout',
-        'cols',
-        'breakpoints',
-        'compactType',
-        'id',
-        'rowHeight',
-        'showRemoveButton',
-        'showResizeHandles',
-        'style',
-    ];
-    return (
-        _.isEqual(
-            prevProps.items.map((i) => _.pick(i, ['key'])),
-            nextProps.items.map((i) => _.pick(i, ['key']))
-        ) &&
-        _.isEqual(
-            _.pick(prevProps, propsToCompare),
-            _.pick(nextProps, propsToCompare)
-        )
-    );
-}
+//function areEqual(prevProps, nextProps) {
+//    const propsToCompare = [
+//        'itemLayout',
+//        'cols',
+//        'breakpoints',
+//        'compactType',
+//        'id',
+//        'rowHeight',
+//        'showRemoveButton',
+//        'showResizeHandles',
+//        'style',
+//    ];
+//    return (
+//        _.isEqual(
+//            prevProps.items.map((i) => _.pick(i, ['key'])),
+//            nextProps.items.map((i) => _.pick(i, ['key']))
+//        ) &&
+//        _.isEqual(
+//            _.pick(prevProps, propsToCompare),
+//            _.pick(nextProps, propsToCompare)
+//        )
+//    );
+//}
+//
+//export default memo(DashGridLayout, areEqual);
 
-export default memo(DashGridLayout, areEqual);
+export default DashGridLayout
