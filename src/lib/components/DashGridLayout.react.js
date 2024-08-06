@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback, memo} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import {Responsive, WidthProvider} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -296,6 +296,9 @@ DashGridLayout.propTypes = {
      */
     itemCount: PropTypes.number,
 
+    /**
+     * The item in the grid that should be removed when triggered
+     */
     itemToRemove: PropTypes.any,
 
     /**
@@ -383,31 +386,5 @@ DashGridLayout.propTypes = {
         xxs: PropTypes.number,
     }),
 };
-
-//function areEqual(prevProps, nextProps) {
-//    const propsToCompare = [
-//        'itemLayout',
-//        'cols',
-//        'breakpoints',
-//        'compactType',
-//        'id',
-//        'rowHeight',
-//        'showRemoveButton',
-//        'showResizeHandles',
-//        'style',
-//    ];
-//    return (
-//        _.isEqual(
-//            prevProps.items.map((i) => _.pick(i, ['key'])),
-//            nextProps.items.map((i) => _.pick(i, ['key']))
-//        ) &&
-//        _.isEqual(
-//            _.pick(prevProps, propsToCompare),
-//            _.pick(nextProps, propsToCompare)
-//        )
-//    );
-//}
-//
-//export default memo(DashGridLayout, areEqual);
 
 export default DashGridLayout

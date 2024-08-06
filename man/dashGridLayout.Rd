@@ -10,18 +10,16 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 }
 
 \usage{
-dashGridLayout(id=NULL, addItem=NULL, breakpointData=NULL,
-breakpoints=NULL, className=NULL, cols=NULL,
-compactType=NULL, currentLayout=NULL, itemCount=NULL,
-itemLayout=NULL, items=NULL, persisted_props=NULL,
+dashGridLayout(id=NULL, breakpointData=NULL, breakpoints=NULL,
+className=NULL, cols=NULL, compactType=NULL,
+currentLayout=NULL, itemCount=NULL, itemLayout=NULL,
+itemToRemove=NULL, items=NULL, persisted_props=NULL,
 persistence=NULL, persistence_type=NULL, rowHeight=NULL,
 showRemoveButton=NULL, showResizeHandles=NULL, style=NULL)
 }
 
 \arguments{
 \item{id}{Character. The ID used to identify this component in Dash callbacks.}
-
-\item{addItem}{Logical. Flag to add a new item to the grid.}
 
 \item{breakpointData}{Lists containing elements 'newbreakpoint', 'newcols'.
 those elements have the following types:
@@ -59,6 +57,8 @@ those elements have the following types:
   - y (numeric; optional)
   - w (numeric; optional)
   - h (numeric; optional)s. Layout configuration for each item.}
+
+\item{itemToRemove}{Logical | numeric | character | named list | unnamed list. The item in the grid that should be removed when triggered}
 
 \item{items}{List of a list of or a singular dash component, string or numbers. List of items to be rendered in the grid.}
 
