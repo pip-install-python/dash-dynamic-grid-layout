@@ -12,7 +12,6 @@ const DraggableWrapper = (props) => {
         background: props.handleBackground || 'rgb(85,85,85)',
         textAlign: 'center',
         color: props.handleColor || 'white',
-        // display: props.showRemoveButton ? 'block' : 'none',
     };
 
     return (
@@ -49,7 +48,6 @@ DraggableWrapper.propTypes = {
      */
     handleText: PropTypes.string,
 
-    // showDragHandle: PropTypes.bool,
     /**
      * A unique identifier for the DraggableWrapper component.
      */
@@ -60,7 +58,6 @@ DraggableWrapper.defaultProps = {
     handleBackground: 'rgb(85,85,85)',
     handleColor: 'white',
     handleText: 'Drag here',
-    // showDragHandle: true,
 };
 
 export default DraggableWrapper;

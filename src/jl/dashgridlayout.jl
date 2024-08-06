@@ -10,7 +10,6 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 It leverages the react-grid-layout library to provide responsive and draggable grid items.
 Keyword arguments:
 - `id` (String; optional): The ID used to identify this component in Dash callbacks.
-- `addItem` (Bool; optional): Flag to add a new item to the grid.
 - `breakpointData` (optional): Data about the current breakpoint and columns.. breakpointData has the following type: lists containing elements 'newBreakpoint', 'newCols'.
 Those elements have the following types:
   - `newBreakpoint` (String; optional)
@@ -40,6 +39,7 @@ Those elements have the following types:
   - `y` (Real; optional)
   - `w` (Real; optional)
   - `h` (Real; optional)s
+- `itemToRemove` (Bool | Real | String | Dict | Array; optional): The item in the grid that should be removed when triggered
 - `items` (Array of a list of or a singular dash component, string or numbers; optional): List of items to be rendered in the grid.
 - `persisted_props` (Array; optional): List of props to persist.
 - `persistence` (Bool; optional): Whether to persist the component's state.
@@ -50,7 +50,7 @@ Those elements have the following types:
 - `style` (Dict; optional): Inline styles for the grid layout.
 """
 function dashgridlayout(; kwargs...)
-        available_props = Symbol[:id, :addItem, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :items, :persisted_props, :persistence, :persistence_type, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
+        available_props = Symbol[:id, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :persisted_props, :persistence, :persistence_type, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
         wild_props = Symbol[]
         return Component("dashgridlayout", "DashGridLayout", "dash_dynamic_grid_layout", available_props, wild_props; kwargs...)
 end
