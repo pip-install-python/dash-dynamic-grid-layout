@@ -41,16 +41,13 @@ Those elements have the following types:
   - `h` (Real; optional)s
 - `itemToRemove` (Bool | Real | String | Dict | Array; optional): The item in the grid that should be removed when triggered
 - `items` (Array of a list of or a singular dash component, string or numbers; optional): List of items to be rendered in the grid.
-- `persisted_props` (Array; optional): List of props to persist.
-- `persistence` (Bool; optional): Whether to persist the component's state.
-- `persistence_type` (a value equal to: 'local', 'memory', 'session'; optional): Type of persistence ('local', 'memory', 'session').
 - `rowHeight` (Real; optional): The height of a single row in pixels.
 - `showRemoveButton` (Bool; optional): Whether to show remove buttons for grid items.
 - `showResizeHandles` (Bool; optional): Whether to show resize handles for grid items.
 - `style` (Dict; optional): Inline styles for the grid layout.
 """
 function dashgridlayout(; kwargs...)
-        available_props = Symbol[:id, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :persisted_props, :persistence, :persistence_type, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
+        available_props = Symbol[:id, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
         wild_props = Symbol[]
         return Component("dashgridlayout", "DashGridLayout", "dash_dynamic_grid_layout", available_props, wild_props; kwargs...)
 end
