@@ -9,11 +9,19 @@ from datetime import datetime, date
 import json
 import random
 import string
+import full_calendar_component as fcc
+from datetime import datetime
 
 # Set the React version
 dash._dash_renderer._set_react_version("18.2.0")
 
 app = Dash(__name__)
+
+# Get today's date
+today = datetime.now()
+
+# Format the date
+formatted_date = today.strftime("%Y-%m-%d")
 
 # Sample data for the graph
 df = px.data.iris()
@@ -32,6 +40,12 @@ app.layout = dmc.MantineProvider(
     [
         html.Div(
             [
+                html.Center(html.H4("json.dumps(current_layout)")),
+                html.Hr(),
+                html.Div(id="layout-output"),
+                html.Hr(),
+                dmc.Group([
+                    html.H4("Add items or edit the layout ->"),
                 dmc.Menu(
                     [
                         dmc.MenuTarget(
@@ -65,6 +79,7 @@ app.layout = dmc.MantineProvider(
                     },
                     position="right",
                 ),
+                    ]),
                 dgl.DashGridLayout(
                     id="grid-layout",
                     items=[
@@ -80,7 +95,7 @@ app.layout = dmc.MantineProvider(
                                     },
                                 ),
                             ],
-                            id="draggable-map-1",
+                            id="draggable-map",
                             handleBackground="rgb(85,85,85)",
                         ),
                         dgl.DraggableWrapper(
@@ -92,7 +107,7 @@ app.layout = dmc.MantineProvider(
                                     "objectFit": "cover",
                                 },
                             ),
-                            id="draggable-map-2",
+                            id="draggable-image",
                         ),
                         dgl.DraggableWrapper(
                             dcc.Graph(
@@ -105,7 +120,7 @@ app.layout = dmc.MantineProvider(
                                 ),
                                 style={"height": "100%"},
                             ),
-                            id="draggable-map-3",
+                            id="draggable-graph",
                         ),
                         dgl.DraggableWrapper(
                             dmc.ColorPicker(
@@ -114,17 +129,35 @@ app.layout = dmc.MantineProvider(
                                 value="rgba(0, 0, 0, 1)",
                                 fullWidth=True,
                             ),
+                            id="draggable-color-picker",
                         ),
                         dgl.DraggableWrapper(
-                            dmc.DatePicker(
-                                id="date-picker-input",
-                                label="Start Date",
-                                description="You can also provide a description",
-                                minDate=date(2020, 8, 5),
-                                value=datetime.now().date(),  # or string in the format "YYYY-MM-DD"
-                                w=250,
-                            )
+                            fcc.FullCalendarComponent(
+                                id="api_calendar",  # Unique ID for the component
+                                initialView='dayGridMonth',  # dayGridMonth, timeGridWeek, timeGridDay, listWeek,
+                                # dayGridWeek, dayGridYear, multiMonthYear, resourceTimeline, resourceTimeGridDay, resourceTimeLineWeek
+                                headerToolbar={
+                                    "left": "prev,next today",
+                                    "center": "",
+                                    "right": "",
+                                },  # Calendar header
+                                initialDate=f"{formatted_date}",  # Start date for calendar
+                                editable=True,  # Allow events to be edited
+                                selectable=True,  # Allow dates to be selected
+                                events=[],
+                                nowIndicator=True,  # Show current time indicator
+                                navLinks=True,  # Allow navigation to other dates
+                            ),
+                            id="draggable-calendar"
                         ),
+                    ],
+                    itemLayout=[
+                        # wrapper id, x(0-12), y, w(0-12), h(0-12)
+                        {'i': 'draggable-map', 'x': 0, 'y': 0, 'w': 6, 'h': 4},
+                        {'i': 'draggable-image', 'x': 4, 'y': 0, 'w': 4, 'h': 2},
+                        {'i': 'draggable-graph', 'x': 0, 'y': 4, 'w': 6, 'h': 4},
+                        {'i': 'draggable-color-picker', 'x': 6, 'y': 2, 'w': 3, 'h': 2},
+                        {'i': 'draggable-calendar', 'x': 6, 'y': 4, 'w': 6, 'h': 4}
                     ],
                     showRemoveButton=False,
                     showResizeHandles=False,
@@ -134,7 +167,6 @@ app.layout = dmc.MantineProvider(
                     compactType="horizontal",
                     persistence=True,
                 ),
-                html.Div(id="layout-output"),
                 dcc.Store(id="layout-store"),
             ]
         )
@@ -153,7 +185,7 @@ def store_layout(current_layout):
     Output("grid-layout", "showRemoveButton"),
     Output("grid-layout", "showResizeHandles"),
     # show how to dynamically change the handle background color of a wrapped component
-    Output("draggable-map-1", "handleBackground"),
+    Output("draggable-map", "handleBackground"),
     Input("edit-mode", "n_clicks"),
     State("grid-layout", "showRemoveButton"),
     State("grid-layout", "showResizeHandles"),
