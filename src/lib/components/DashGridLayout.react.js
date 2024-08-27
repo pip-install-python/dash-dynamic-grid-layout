@@ -15,24 +15,31 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
  * It leverages the react-grid-layout library to provide responsive and draggable grid items.
  */
 const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
-    const convertPropsToLayout = useCallback((items) => {
-        const newItems = [...items].map((item, index) => {
-            return {
-                ...{
-                    i: item.key,
-                    // eslint-disable-next-line no-magic-numbers
-                    x: (index * 2) % 12,
-                    // eslint-disable-next-line no-magic-numbers
-                    y: Math.floor(index / 6) * 2,
-                    w: 2,
-                    h: 2,
-                    content: item,
-                },
-                ...layoutItemsRef.current.filter((i) => i.i === item.key)[0],
-            };
-        });
-        return newItems;
-    }, [itemLayout])
+    const layoutItemsRef = useRef([]);
+
+    const convertPropsToLayout = useCallback(
+        (items) => {
+            const newItems = [...items].map((item, index) => {
+                return {
+                    ...{
+                        i: item.key,
+                        // eslint-disable-next-line no-magic-numbers
+                        x: (index * 2) % 12,
+                        // eslint-disable-next-line no-magic-numbers
+                        y: Math.floor(index / 6) * 2,
+                        w: 2,
+                        h: 2,
+                        content: item,
+                    },
+                    ...layoutItemsRef.current.filter(
+                        (i) => i.i === item.key
+                    )[0],
+                };
+            });
+            return newItems;
+        },
+        [itemLayout]
+    );
 
     const createElement = (el) => {
         const removeStyle = {
@@ -89,7 +96,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     });
     const gridLayoutRef = useRef(null);
     const [init, setInit] = useState(false);
-    const layoutItemsRef = useRef([]);
+
     const systemUpdateItems = useRef(null);
     const previousItems = useRef([]);
     const [gridLayout, setGridLayout] = useState([]);
@@ -97,7 +104,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
         showRemoveButton: props.showRemoveButton,
         showResizeHandles: props.showResizeHandles,
     });
-    const updateItemsFromPropsDebounced = useRef(null)
+    const updateItemsFromPropsDebounced = useRef(null);
 
     const findCurrentBreakpoint = useCallback(
         (init = false) => {
@@ -164,14 +171,16 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     }, [layoutItems]);
 
     const stripItems = (compItems) => {
-        const newItems = []
+        const newItems = [];
         compItems.map((i) => {
-            const dets = {key: i.key}
-            dets['props'] = _.get(i, ['props', '_dashprivate_layout']) || _.get(i, ['props'])
-            newItems.push(dets)
-        })
-        return newItems
-    }
+            const dets = {key: i.key};
+            dets.props =
+                _.get(i, ['props', '_dashprivate_layout']) ||
+                _.get(i, ['props']);
+            newItems.push(dets);
+        });
+        return newItems;
+    };
 
     useEffect(() => {
         if (init) {
@@ -186,20 +195,25 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
                     showRemoveButton: props.showRemoveButton,
                     showResizeHandles: props.showResizeHandles,
                 };
-            }
-            else if (
+            } else if (
                 !_.isEqual(
                     stripItems(previousItems.current),
                     stripItems(items)
                 ) ||
-                !_.isEqual((itemLayout || []), layoutItemsRef.current)
+                !_.isEqual(itemLayout || [], layoutItemsRef.current)
             ) {
                 updateItemsFromPropsDebounced.current(items);
-                previousItems.current = items
+                previousItems.current = items;
             }
-            layoutItemsRef.current = itemLayout
+            layoutItemsRef.current = itemLayout;
         }
-    }, [items, itemLayout, init, props.showRemoveButton, props.showResizeHandles]);
+    }, [
+        items,
+        itemLayout,
+        init,
+        props.showRemoveButton,
+        props.showResizeHandles,
+    ]);
 
     const onLayoutChange = _.debounce((layout) => {
         if (init) {
@@ -208,7 +222,7 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
                     const newItem = layout.filter((i) => i.i === item.i)[0];
                     return {...item, ...newItem};
                 });
-                updateDashLayoutDebounced(newItems)
+                updateDashLayoutDebounced(newItems);
             }
             if (setProps) {
                 if (!_.isEqual(props.currentLayout, layout)) {
@@ -372,4 +386,4 @@ DashGridLayout.propTypes = {
     }),
 };
 
-export default DashGridLayout
+export default DashGridLayout;
