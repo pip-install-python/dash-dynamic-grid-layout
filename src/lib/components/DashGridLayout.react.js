@@ -243,6 +243,8 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
     return (
         <div id={props.id} style={props.style} ref={gridLayoutRef}>
             <ResponsiveReactGridLayout
+                maxRows = {props.maxRows}
+                autoSize={props.autoSize}
                 //                onLayoutChange={layoutGridOnly}
                 onDragStop={onLayoutChange}
                 onResizeStop={onLayoutChange}
@@ -266,6 +268,8 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 };
 
 DashGridLayout.defaultProps = {
+    autoSize: true,
+    maxRows: Infinity,
     className: 'layout',
     rowHeight: 100,
     cols: {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
@@ -280,6 +284,14 @@ DashGridLayout.defaultProps = {
 };
 
 DashGridLayout.propTypes = {
+    maxRows: PropTypes.number,
+     /**
+     * If true, the container height swells and contracts to fit contents.
+     */
+    autoSize: PropTypes.bool,  
+    /**
+     * Prevents dragging items outside the container.
+     */
     /**
      * The ID used to identify this component in Dash callbacks.
      */
