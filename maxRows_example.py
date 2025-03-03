@@ -161,7 +161,7 @@ app.layout = dmc.MantineProvider(
                     ],
                     showRemoveButton=False,
                     showResizeHandles=False,
-                    rowHeight=15,
+                    rowHeight=150,
                     cols={"lg": 12, "md": 10, "sm": 6, "xs": 4, "xxs": 2},
                     style={"height": "1500px", 'backgroundColor': 'green'},
                     compactType=None,

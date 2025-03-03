@@ -9,6 +9,7 @@ dash-iconify==0.1.2
 dash-leaflet==1.0.15
 dash-table==5.0.0
 dash_mantine_components==0.14.3
+full-calendar-component
 Flask==3.0.3
 idna==3.7
 importlib_metadata==8.2.0

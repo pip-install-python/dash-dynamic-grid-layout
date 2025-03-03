@@ -165,7 +165,7 @@ app.layout = dmc.MantineProvider(
                     cols={"lg": 12, "md": 10, "sm": 6, "xs": 4, "xxs": 2},
                     style={"height": "800px"},
                     compactType="horizontal",
-                    persistence=True,
+                    # persistence=True,
                 ),
                 dcc.Store(id="layout-store"),
             ]

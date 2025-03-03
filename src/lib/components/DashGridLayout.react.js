@@ -284,14 +284,14 @@ DashGridLayout.defaultProps = {
 };
 
 DashGridLayout.propTypes = {
-    maxRows: PropTypes.number,
-     /**
+    /**
      * If true, the container height swells and contracts to fit contents.
      */
-    autoSize: PropTypes.bool,  
+    maxRows: PropTypes.number,
     /**
      * Prevents dragging items outside the container.
      */
+    autoSize: PropTypes.bool,  
     /**
      * The ID used to identify this component in Dash callbacks.
      */

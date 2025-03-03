@@ -10,6 +10,7 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 It leverages the react-grid-layout library to provide responsive and draggable grid items.
 Keyword arguments:
 - `id` (String; optional): The ID used to identify this component in Dash callbacks.
+- `autoSize` (Bool; optional): Prevents dragging items outside the container.
 - `breakpointData` (optional): Data about the current breakpoint and columns.. breakpointData has the following type: lists containing elements 'newBreakpoint', 'newCols'.
 Those elements have the following types:
   - `newBreakpoint` (String; optional)
@@ -41,13 +42,14 @@ Those elements have the following types:
   - `h` (Real; optional)s
 - `itemToRemove` (Bool | Real | String | Dict | Array; optional): The item in the grid that should be removed when triggered
 - `items` (Array of a list of or a singular dash component, string or numbers; optional): List of items to be rendered in the grid.
+- `maxRows` (Real; optional): If true, the container height swells and contracts to fit contents.
 - `rowHeight` (Real; optional): The height of a single row in pixels.
 - `showRemoveButton` (Bool; optional): Whether to show remove buttons for grid items.
 - `showResizeHandles` (Bool; optional): Whether to show resize handles for grid items.
 - `style` (Dict; optional): Inline styles for the grid layout.
 """
 function dashgridlayout(; kwargs...)
-        available_props = Symbol[:id, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
+        available_props = Symbol[:id, :autoSize, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :maxRows, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
         wild_props = Symbol[]
         return Component("dashgridlayout", "DashGridLayout", "dash_dynamic_grid_layout", available_props, wild_props; kwargs...)
 end
