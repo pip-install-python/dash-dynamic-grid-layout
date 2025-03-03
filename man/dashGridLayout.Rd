@@ -10,16 +10,18 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 }
 
 \usage{
-dashGridLayout(id=NULL, breakpointData=NULL, breakpoints=NULL,
-className=NULL, cols=NULL, compactType=NULL,
-currentLayout=NULL, itemCount=NULL, itemLayout=NULL,
-itemToRemove=NULL, items=NULL, persisted_props=NULL,
-persistence=NULL, persistence_type=NULL, rowHeight=NULL,
-showRemoveButton=NULL, showResizeHandles=NULL, style=NULL)
+dashGridLayout(id=NULL, autoSize=NULL, breakpointData=NULL,
+breakpoints=NULL, className=NULL, cols=NULL,
+compactType=NULL, currentLayout=NULL, itemCount=NULL,
+itemLayout=NULL, itemToRemove=NULL, items=NULL,
+maxRows=NULL, rowHeight=NULL, showRemoveButton=NULL,
+showResizeHandles=NULL, style=NULL)
 }
 
 \arguments{
 \item{id}{Character. The ID used to identify this component in Dash callbacks.}
+
+\item{autoSize}{Logical. Prevents dragging items outside the container.}
 
 \item{breakpointData}{Lists containing elements 'newbreakpoint', 'newcols'.
 those elements have the following types:
@@ -62,11 +64,7 @@ those elements have the following types:
 
 \item{items}{List of a list of or a singular dash component, string or numbers. List of items to be rendered in the grid.}
 
-\item{persisted_props}{Unnamed list. List of props to persist.}
-
-\item{persistence}{Logical. Whether to persist the component's state.}
-
-\item{persistence_type}{A value equal to: 'local', 'memory', 'session'. Type of persistence ('local', 'memory', 'session').}
+\item{maxRows}{Numeric. If true, the container height swells and contracts to fit contents.}
 
 \item{rowHeight}{Numeric. The height of a single row in pixels.}
 
