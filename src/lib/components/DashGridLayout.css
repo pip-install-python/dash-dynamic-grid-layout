@@ -75,14 +75,14 @@
 .react-resizable-handle:hover {
     opacity: 1;
 }
-
+/* This is not needed anymore as there is the new draggableChildStyle prop to dynamically change this
 .react-draggable:not(.react-resizable-hide) > div {
     padding: 10px;
     overflow: hidden;
     max-height: 95%;
     max-width: 100%;
 }
-
+*/
 .react-resizable-hide > div > .react-grid-dragHandle {
     display: none;
 }

@@ -68,23 +68,32 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 
         return (
             <div
-                key={el.i}
-                data-grid={_.pick(el, ['w', 'h', 'x', 'y', 'minW', 'minH'])}
-                style={{overflow: 'hidden', height: '100%'}}
+              key={el.i}
+              data-grid={_.pick(el, ['w', 'h', 'x', 'y', 'minW', 'minH'])}
             >
+              <div
+                className={!props.showResizeHandles ? 'react-resizable-hide' : ''}
+                style={
+                    props.showResizeHandles
+                      ? { ...props.draggableChildStyle }
+                      : { overflow: 'hidden', height: '100%' } /* Original style when not in edit mode */
+                  }
+        
+              >
                 {props.showRemoveButton && (
-                    <span
-                        className="remove"
-                        style={removeStyle}
-                        onClick={() => setProps({itemToRemove: el.i})}
-                    >
-                        ×
-                    </span>
+                  <span
+                    className="remove"
+                    style={removeStyle}
+                    onClick={() => setProps({itemToRemove: el.i})}
+                  >
+                    ×
+                  </span>
                 )}
                 {content}
+              </div>
             </div>
-        );
-    };
+          );
+        };
 
     const [layoutItems, setItems] = useState([]);
     const [breakpoints, setBreakpoints] = useState({
@@ -260,6 +269,8 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
                 {..._.omit(props, ['items'])}
                 breakpoints={breakpoints}
                 preventCollision={!props.compactType}
+                margin={props.margin}
+                allowOverlap={props.allowOverlap}
             >
                 {gridLayout}
             </ResponsiveReactGridLayout>
@@ -268,6 +279,8 @@ const DashGridLayout = ({setProps, items, itemLayout, ...props}) => {
 };
 
 DashGridLayout.defaultProps = {
+    allowOverlap: false,
+    margin: [10, 10],
     autoSize: true,
     maxRows: Infinity,
     className: 'layout',
@@ -281,6 +294,12 @@ DashGridLayout.defaultProps = {
     items: [],
     itemLayout: [],
     itemToRemove: '',
+    draggableChildStyle: {
+        padding: '10px',
+        overflow: 'hidden',
+        maxHeight: '95%',
+        maxWidth: '100%',
+      },
 };
 
 DashGridLayout.propTypes = {
@@ -357,7 +376,8 @@ DashGridLayout.propTypes = {
             y: PropTypes.number,
             w: PropTypes.number,
             h: PropTypes.number,
-        })
+        }),
+    
     ),
 
     /**
@@ -396,6 +416,24 @@ DashGridLayout.propTypes = {
         xs: PropTypes.number,
         xxs: PropTypes.number,
     }),
+    /**
+     * Margin between grid items, in pixels. Can be a fixed array like [10, 10],
+     * or responsive like {lg: [10, 10], md: [8, 8], ...}
+     */
+    margin: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.number),
+        PropTypes.object
+    ]),
+    /** 
+    *If true, grid can be placed one over the other.
+    *If set, implies `preventCollision`.
+    */
+    allowOverlap: PropTypes.bool, 
+    /** 
+     * Style of the draggable element when in layout edit mode.
+    */
+    draggableChildStyle: PropTypes.object,
+
 };
 
 export default DashGridLayout;
