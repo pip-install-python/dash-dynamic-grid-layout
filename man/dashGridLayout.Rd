@@ -10,16 +10,20 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 }
 
 \usage{
-dashGridLayout(id=NULL, autoSize=NULL, breakpointData=NULL,
-breakpoints=NULL, className=NULL, cols=NULL,
-compactType=NULL, currentLayout=NULL, itemCount=NULL,
-itemLayout=NULL, itemToRemove=NULL, items=NULL,
-maxRows=NULL, rowHeight=NULL, showRemoveButton=NULL,
+dashGridLayout(id=NULL, allowOverlap=NULL, autoSize=NULL,
+breakpointData=NULL, breakpoints=NULL, className=NULL,
+cols=NULL, compactType=NULL, currentLayout=NULL,
+draggableChildStyle=NULL, itemCount=NULL, itemLayout=NULL,
+itemToRemove=NULL, items=NULL, margin=NULL, maxRows=NULL,
+rowHeight=NULL, showRemoveButton=NULL,
 showResizeHandles=NULL, style=NULL)
 }
 
 \arguments{
 \item{id}{Character. The ID used to identify this component in Dash callbacks.}
+
+\item{allowOverlap}{Logical. If true, grid can be placed one over the other.
+If set, implies `preventCollision`.}
 
 \item{autoSize}{Logical. Prevents dragging items outside the container.}
 
@@ -50,6 +54,8 @@ those elements have the following types:
   - w (numeric; optional)
   - h (numeric; optional)s. The current layout of the grid items.}
 
+\item{draggableChildStyle}{Named list. Style of the draggable element when in layout edit mode.}
+
 \item{itemCount}{Numeric. The number of items in the grid.}
 
 \item{itemLayout}{List of lists containing elements 'i', 'x', 'y', 'w', 'h'.
@@ -63,6 +69,9 @@ those elements have the following types:
 \item{itemToRemove}{Logical | numeric | character | named list | unnamed list. The item in the grid that should be removed when triggered}
 
 \item{items}{List of a list of or a singular dash component, string or numbers. List of items to be rendered in the grid.}
+
+\item{margin}{List of numerics | named list. Margin between grid items, in pixels. Can be a fixed array like [10, 10],
+or responsive like {lg: [10, 10], md: [8, 8], ...}}
 
 \item{maxRows}{Numeric. If true, the container height swells and contracts to fit contents.}
 

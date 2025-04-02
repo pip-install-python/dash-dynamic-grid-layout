@@ -1,6 +1,6 @@
 {
   "name": "dash_dynamic_grid_layout",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Grid layout system for moving components around.",
   "repository": {
     "type": "git",

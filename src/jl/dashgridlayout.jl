@@ -10,6 +10,8 @@ DashGridLayout is a flexible grid layout system for arranging and moving compone
 It leverages the react-grid-layout library to provide responsive and draggable grid items.
 Keyword arguments:
 - `id` (String; optional): The ID used to identify this component in Dash callbacks.
+- `allowOverlap` (Bool; optional): If true, grid can be placed one over the other.
+If set, implies `preventCollision`.
 - `autoSize` (Bool; optional): Prevents dragging items outside the container.
 - `breakpointData` (optional): Data about the current breakpoint and columns.. breakpointData has the following type: lists containing elements 'newBreakpoint', 'newCols'.
 Those elements have the following types:
@@ -32,6 +34,7 @@ Those elements have the following types:
   - `y` (Real; optional)
   - `w` (Real; optional)
   - `h` (Real; optional)s
+- `draggableChildStyle` (Dict; optional): Style of the draggable element when in layout edit mode.
 - `itemCount` (Real; optional): The number of items in the grid.
 - `itemLayout` (optional): Layout configuration for each item.. itemLayout has the following type: Array of lists containing elements 'i', 'x', 'y', 'w', 'h'.
 Those elements have the following types:
@@ -42,6 +45,8 @@ Those elements have the following types:
   - `h` (Real; optional)s
 - `itemToRemove` (Bool | Real | String | Dict | Array; optional): The item in the grid that should be removed when triggered
 - `items` (Array of a list of or a singular dash component, string or numbers; optional): List of items to be rendered in the grid.
+- `margin` (Array of Reals | Dict; optional): Margin between grid items, in pixels. Can be a fixed array like [10, 10],
+or responsive like {lg: [10, 10], md: [8, 8], ...}
 - `maxRows` (Real; optional): If true, the container height swells and contracts to fit contents.
 - `rowHeight` (Real; optional): The height of a single row in pixels.
 - `showRemoveButton` (Bool; optional): Whether to show remove buttons for grid items.
@@ -49,7 +54,7 @@ Those elements have the following types:
 - `style` (Dict; optional): Inline styles for the grid layout.
 """
 function dashgridlayout(; kwargs...)
-        available_props = Symbol[:id, :autoSize, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :itemCount, :itemLayout, :itemToRemove, :items, :maxRows, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
+        available_props = Symbol[:id, :allowOverlap, :autoSize, :breakpointData, :breakpoints, :className, :cols, :compactType, :currentLayout, :draggableChildStyle, :itemCount, :itemLayout, :itemToRemove, :items, :margin, :maxRows, :rowHeight, :showRemoveButton, :showResizeHandles, :style]
         wild_props = Symbol[]
         return Component("dashgridlayout", "DashGridLayout", "dash_dynamic_grid_layout", available_props, wild_props; kwargs...)
 end
